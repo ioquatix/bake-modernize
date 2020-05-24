@@ -33,7 +33,7 @@ module Bake
 		end
 		
 		def self.copy_template(source_path, destination_path)
-			glob = Build::Files::Glob.new(source_path, '**/{.[^\.]*,*}')
+			glob = Build::Files::Glob.new(source_path, '**/*')
 			
 			glob.each do |path|
 				full_path = File.join(destination_path, path.relative_path)
