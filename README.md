@@ -1,4 +1,4 @@
-# Async::WebSocket
+# Bake Modernize
 
 A gem for modernizing files in your Ruby project.
 
