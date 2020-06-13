@@ -28,7 +28,7 @@ def repository_url(root)
 	repository = Rugged::Repository.discover(root)
 	git_url = repository.remotes['origin'].url
 	
-	if match = git_url.match(/@(?<url>.*?):(?<path>.*)\z/)
+	if match = git_url.match(/@(?<url>.*?):(?<path>.*?)(\.git)?\z/)
 		return "https://#{match[:url]}/#{match[:path]}"
 	end
 end
