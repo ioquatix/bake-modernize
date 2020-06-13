@@ -4,3 +4,7 @@ source "https://rubygems.org"
 gemspec
 
 # gem "build-files", path: "../build-files"
+
+group :test do
+	gem "rspec", "~> 3.9"
+end
