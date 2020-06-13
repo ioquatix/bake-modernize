@@ -22,6 +22,8 @@ Gem::Specification.new do |spec|
 	spec.add_dependency "async-http"
 	spec.add_dependency "bake"
 	spec.add_dependency "build-files", "~> 1.6"
+	spec.add_dependency "markly"
+	spec.add_dependency "rugged"
 	
 	spec.add_development_dependency "bake-bundler"
 end
