@@ -70,7 +70,7 @@ def update(path: self.default_gemspec_path, output: $stdout)
 	end
 	
 	if required_ruby_version = spec.required_ruby_version
-		output.puts
+		output.puts "\t"
 		output.puts "\tspec.required_ruby_version = #{required_ruby_version.to_s.inspect}"
 	end
 	
