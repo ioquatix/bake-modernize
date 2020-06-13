@@ -155,7 +155,7 @@ end
 GITHUB_PROJECT = /github.com\/(?<account>.*?)\/(?<project>.*?)\/?/
 
 def detect_funding_uri(spec)
-	if match = spec.homepage.match(GITHUB_PROJECT)
+	if match = spec.homepage&.match(GITHUB_PROJECT)
 		account = match[:account]
 		
 		funding_uri = "https://github.com/sponsors/#{account}/"
