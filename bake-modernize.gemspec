@@ -25,5 +25,5 @@ Gem::Specification.new do |spec|
 	spec.add_dependency "markly"
 	spec.add_dependency "rugged"
 	
-	spec.add_development_dependency "bake-bundler"
+	spec.add_development_dependency "rspec"
 end
