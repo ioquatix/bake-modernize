@@ -18,8 +18,7 @@ def update(root:)
 	Bake::Modernize.copy_template(template_root, root)
 	
 	readme_path = File.expand_path("README.md", root)
-	repository_url = self.repository_url(root)
-	self.update_badges(readme_path, repository_url)
+	update_badges(readme_path, repository_url(root))
 end
 
 private
