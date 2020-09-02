@@ -38,14 +38,6 @@ jobs:
       with:
         ruby-version: ${{matrix.ruby}}
     
-    - name: Installing packages (ubuntu)
-      if: matrix.os == 'ubuntu'
-      run: sudo apt-get install pkg-config
-    
-    - name: Installing packages (macos)
-      if: matrix.os == 'macos'
-      run: brew install pkg-config
-    
     - name: Install dependencies
       run: ${{matrix.env}} bundle install
     

@@ -70,8 +70,10 @@ def update(path: self.default_gemspec_path, output: $stdout)
 	end
 	
 	if required_ruby_version = spec.required_ruby_version
-		output.puts "\t"
-		output.puts "\tspec.required_ruby_version = #{required_ruby_version.to_s.inspect}"
+		unless required_ruby_version.none?
+			output.puts "\t"
+			output.puts "\tspec.required_ruby_version = #{required_ruby_version.to_s.inspect}"
+		end
 	end
 	
 	if spec.dependencies.any?
