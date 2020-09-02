@@ -32,7 +32,7 @@ def repository_url(root)
 	end
 end
 
-def badge_for(repository_url = self.repository_url)
+def badge_for(repository_url)
 	"[![Development Status](#{repository_url}/workflows/Development/badge.svg)](#{repository_url}/actions?workflow=Development)"
 end
 

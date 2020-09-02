@@ -1,7 +1,7 @@
 
 # Rewrite the current gemspec.
 def gemspec
-	path = self.default_gemspec_path
+	path = default_gemspec_path
 	buffer = StringIO.new
 	
 	update(path: path, output: buffer)
@@ -11,11 +11,11 @@ end
 
 # Rewrite the specified gemspec.
 # @param
-def update(path: self.default_gemspec_path, output: $stdout)
+def update(path: default_gemspec_path, output: $stdout)
 	spec = Gem::Specification.load(path)
 	
 	root = File.dirname(path)
-	version_path = self.version_path(root)
+	version_path = version_path(root)
 	
 	constant = File.read(version_path)
 		.scan(/module\s+(.*?)$/)
