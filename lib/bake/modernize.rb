@@ -19,8 +19,8 @@
 # THE SOFTWARE.
 
 require "bake/modernize/version"
-
 require 'build/files/glob'
+require 'fileutils'
 
 module Bake
 	module Modernize
