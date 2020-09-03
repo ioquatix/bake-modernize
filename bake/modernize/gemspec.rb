@@ -76,10 +76,9 @@ def update(path: default_gemspec_path, output: $stdout)
 		end
 	end
 	
-	if spec.dependencies.any?
+	if spec.runtime_dependencies.any?
 		output.puts "\t"
-		spec.dependencies.sort.each do |dependency|
-			next unless dependency.type == :runtime
+		spec.runtime_dependencies.sort.each do |dependency|
 			output.puts "\tspec.add_dependency #{format_dependency(dependency)}"
 		end
 	end
