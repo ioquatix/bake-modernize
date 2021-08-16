@@ -12,7 +12,7 @@ end
 # Rewrite the specified gemspec.
 # @param
 def update(path: default_gemspec_path, output: $stdout)
-	spec = Gem::Specification.load(path)
+	spec = ::Gem::Specification.load(path)
 	
 	root = File.dirname(path)
 	version_path = version_path(root)
