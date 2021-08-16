@@ -38,6 +38,14 @@ def update(path: default_gemspec_path, output: $stdout)
 	output.puts "\tspec.authors = #{spec.authors.inspect}"
 	output.puts "\tspec.license = #{spec.license.inspect}"
 	
+	certificate_path = File.expand_path('release.cert', root)
+	
+	if File.exist?(certificate_path)
+		output.puts "\t"
+		output.puts "\tspec.cert_chain  = ['release.cert']"
+		output.puts "\tspec.signing_key = File.expand_path('~/.gem/release.pem')"
+	end
+	
 	if spec.homepage and !spec.homepage.empty?
 		output.puts "\t"
 		output.puts "\tspec.homepage = #{spec.homepage.inspect}"
