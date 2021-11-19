@@ -27,6 +27,7 @@ def update(path: default_gemspec_path, output: $stdout)
 	
 	spec.metadata.delete_if{|_, value| value.nil?}
 	
+	output.puts "# frozen_string_literal: true"
 	output.puts
 	output.puts "require_relative #{version_path.sub(/\.rb$/, '').inspect}"
 	output.puts
