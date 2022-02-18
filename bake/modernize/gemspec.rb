@@ -25,6 +25,8 @@ def update(path: default_gemspec_path, output: $stdout)
 	spec.metadata["funding_uri"] ||= detect_funding_uri(spec)
 	spec.metadata["documentation_uri"] ||= detect_documentation_uri(spec)
 	
+	spec.authors = sorted_authors(spec)
+	
 	spec.metadata.delete_if{|_, value| value.nil?}
 	
 	output.puts "# frozen_string_literal: true"
@@ -187,4 +189,23 @@ def detect_documentation_uri(spec)
 			return documentation_uri
 		end
 	end
+end
+
+def sorted_authors(spec)
+	input, output = IO.pipe
+	
+	pid = Process.spawn("git", "log", "--format=%aN", out: output)
+	output.close
+	
+	authors = Hash.new{|h,k| h[k] = 0}
+	
+	input.each_line do |author|
+		author = author.chomp!
+		authors[author] += 1
+	end
+	
+	Process.wait(pid)
+	input.close
+	
+	return authors.keys
 end
