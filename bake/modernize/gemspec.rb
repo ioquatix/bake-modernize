@@ -207,5 +207,5 @@ def sorted_authors(spec)
 	Process.wait(pid)
 	input.close
 	
-	return authors.keys
+	return authors.sort_by{|k,v| [-v, k]}.map(&:first)
 end
