@@ -119,7 +119,7 @@ def directory_glob_for(spec, paths = spec.files)
 		end
 	end
 	
-	return "Dir.glob('{#{directories.keys.join(',')}}/**/*', File::FNM_DOTMATCH, base: __dir__)"
+	return "Dir['{#{directories.keys.join(',')}}/**/*', base: __dir__]"
 end
 
 def format_dependency(dependency)
