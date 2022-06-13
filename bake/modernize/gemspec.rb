@@ -109,17 +109,28 @@ private
 def directory_glob_for(spec, paths = spec.files)
 	directories = {}
 	root = File.dirname(spec.loaded_from)
+	dotfiles = false
 	
 	paths.each do |path|
 		directory, _ = path.split(File::SEPARATOR, 2)
+		basename = File.basename(path)
 		
 		full_path = File.expand_path(directory, root)
+		
 		if File.directory?(full_path)
 			directories[directory] = true
 		end
+		
+		if basename.start_with?('.')
+			dotfiles = true
+		end
 	end
 	
-	return "Dir['{#{directories.keys.join(',')}}/**/*', base: __dir__]"
+	if dotfiles
+		return "Dir.glob('{#{directories.keys.join(',')}}/**/*', File::FNM_DOTMATCH, base: __dir__)"
+	else
+		return "Dir['{#{directories.keys.join(',')}}/**/*', base: __dir__]"
+	end
 end
 
 def format_dependency(dependency)

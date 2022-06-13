@@ -5,6 +5,9 @@ on: [push, pull_request]
 permissions:
   contents: read
 
+env:
+  CONSOLE_OUTPUT: Text
+
 jobs:
   test:
     name: ${{matrix.ruby}} on ${{matrix.os}}
@@ -18,12 +21,11 @@ jobs:
           - macos
         
         ruby:
-          - "2.6"
           - "2.7"
           - "3.0"
+          - "3.1"
         
         experimental: [false]
-        env: [""]
         
         include:
           - os: ubuntu
@@ -45,4 +47,4 @@ jobs:
     
     - name: Run tests
       timeout-minutes: 5
-      run: ${{matrix.env}} bundle exec rspec
+      run: bundle exec rspec
