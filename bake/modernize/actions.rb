@@ -20,8 +20,11 @@ def update(root:)
 	template_root = Bake::Modernize.template_path_for('actions')
 	Bake::Modernize.copy_template(template_root, root)
 	
-	readme_path = File.expand_path("README.md", root)
-	update_badges(readme_path, repository_url(root))
+	readme_path = ["README.md", "readme.md"].find{|path| File.exist?(File.expand_path(path, root))}
+
+	if readme_path
+		update_badges(readme_path, repository_url(root))
+	end
 end
 
 private
@@ -33,14 +36,14 @@ def update_filenames(root)
 	# Move all .yml files to .yaml files :)
 	yml_files.each do |path|
 		new_path = path.with(extension: ".yaml", basename: true)
-		FileUtils.mv(path, new_path)
+		FileUtils::Verbose.mv(path, new_path)
 	end
 
 	# Move development.yaml to test.yaml
 	development_path = actions_root + "development.yaml"
 	test_path = actions_root + "test.yaml"
 	if development_path.exist?
-		FileUtils.mv(development_path, test_path)
+		FileUtils::Verbose.mv(development_path, test_path)
 	end
 end
 
