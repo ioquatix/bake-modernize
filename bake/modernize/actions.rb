@@ -2,6 +2,7 @@
 require 'bake/modernize'
 require 'rugged'
 require 'markly'
+require 'build/files/system'
 
 def actions
 	update(root: Dir.pwd)
@@ -14,6 +15,8 @@ def update(root:)
 		FileUtils.rm_rf(travis_path)
 	end
 	
+	update_filenames(root)
+
 	template_root = Bake::Modernize.template_path_for('actions')
 	Bake::Modernize.copy_template(template_root, root)
 	
@@ -22,6 +25,24 @@ def update(root:)
 end
 
 private
+
+def update_filenames(root)
+	actions_root = Build::Files::Path.new(root) + ".github/workflows"
+	yml_files = actions_root.glob("*.yml")
+
+	# Move all .yml files to .yaml files :)
+	yml_files.each do |path|
+		new_path = path.with(extension: ".yaml", basename: true)
+		FileUtils.mv(path, new_path)
+	end
+
+	# Move development.yaml to test.yaml
+	development_path = actions_root + "development.yaml"
+	test_path = actions_root + "test.yaml"
+	if development_path.exist?
+		FileUtils.mv(development_path, test_path)
+	end
+end
 
 def repository_url(root)
 	repository = Rugged::Repository.discover(root)
