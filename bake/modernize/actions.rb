@@ -54,7 +54,7 @@ def repository_url(root)
 end
 
 def badge_for(repository_url)
-	"[![Development Status](#{repository_url}/workflows/Development/badge.svg)](#{repository_url}/actions?workflow=Development)"
+	"[![Development Status](#{repository_url}/workflows/Test/badge.svg)](#{repository_url}/actions?workflow=Test)"
 end
 
 def badge?(node)
