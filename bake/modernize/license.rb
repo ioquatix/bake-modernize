@@ -92,7 +92,11 @@ def authors(root)
 
 	authors.transform_values! do |dates|
 		dates.minmax
-	end.to_a.sort_by! do |author, dates|
+	end
+	
+	authors = authors.to_a
+	
+	authors.sort_by! do |author, dates|
 		dates
 	end
 
