@@ -36,7 +36,7 @@ def update(root:)
 	authors.map do |author, dates|
 		years = dates.map(&:year).uniq
 		
-		buffer.puts "Copyright, #{years.join('-')}, by #{author}."
+		buffer.puts "Copyright, #{years.join('-')}, by #{author}.  "
 	end
 	
 	buffer.puts
