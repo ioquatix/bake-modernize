@@ -1,3 +1,5 @@
+# Released under the MIT License.
+# Copyright, 2020, by Samuel Williams.
 
 require 'bake/modernize'
 

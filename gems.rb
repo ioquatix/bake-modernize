@@ -1,6 +1,8 @@
+# Released under the MIT License.
+# Copyright, 2020-2022, by Samuel Williams.
+
 source "https://rubygems.org"
 
-# Specify your gem's dependencies in bake-modernize.gemspec
 gemspec
 
 group :maintenance, optional: true do

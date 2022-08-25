@@ -1,3 +1,5 @@
+# Released under the MIT License.
+# Copyright, 2022, by Samuel Williams.
 
 require 'console'
 
@@ -27,7 +29,7 @@ def license
 end
 
 def update(root:)
-	authors = self.authors(root)
+	authors, paths = self.authors(root)
 	
 	buffer = StringIO.new
 	buffer.puts "# MIT License"
@@ -45,51 +47,103 @@ def update(root:)
 	File.open("license.md", "w") do |file|
 		file.write(buffer.string)
 	end
+	
+	paths.each do |path, authors|
+		case path
+		when /\.rb$/
+			self.update_source_file_authors(path, authors)
+		end
+	end
 end
 
 private
 
+def update_source_file_authors(path, authors)
+	input = File.readlines(path)
+	output = []
+	
+	if input =~ /^\#!/
+		output.push input.shift
+	end
+	
+	# Remove any existing license:
+	while input.first =~ /^#.*$/
+		input.shift
+	end
+	
+	# Remove any empty lines:
+	while input.first.chomp.empty?
+		input.shift
+	end
+	
+	output << "# Released under the MIT License.\n"
+	
+	authors.each do |author, dates|
+		years = dates.map(&:year).uniq
+		
+		output << "# Copyright, #{years.join('-')}, by #{author}.\n"
+	end
+	
+	output << "\n"
+	
+	output.concat(input)
+	
+	File.open(path, "w") do |file|
+		file.puts(output)
+	end
+end
+
 def authors(root)
 	paths = {}
 	authors = {}
-
+	
 	total = `git rev-list --count HEAD`.to_i
-
+	
 	input, output = IO.pipe
 	pid = Process.spawn("git", "log", "--name-only", "--pretty=format:%ad\t%an", out: output, chdir: root)
-
+	
 	output.close
-
+	
 	progress = Console.logger.progress(self, total)
-
+	
 	while header = (input.readline.chomp rescue nil)
 		break if header.empty?
 		progress.increment
-
+		
 		date, author = header.split("\t", 2)
 		date = Date.parse(date)
-
+		
 		while path = (input.readline.chomp rescue nil)
 			break if path.empty?
-
+			
 			paths[path] ||= {}
 			paths[path][author] ||= []
 			paths[path][author] << date
-
+			
 			authors[author] ||= []
 			authors[author] << date
 		end
 	end
-
+	
 	input.close
 	Process.wait2(pid)
-
+	
 	paths.each do |path, authors|
 		authors.transform_values! do |dates|
 			dates.minmax
 		end
 	end
-
+	
+	paths.transform_values! do |authors|
+		authors.transform_values! do |dates|
+			dates.minmax
+		end
+		
+		authors.sort_by do |author, dates|
+			dates
+		end
+	end
+	
 	authors.transform_values! do |dates|
 		dates.minmax
 	end
@@ -99,6 +153,6 @@ def authors(root)
 	authors.sort_by! do |author, dates|
 		dates
 	end
-
-	return authors
+	
+	return authors, paths
 end

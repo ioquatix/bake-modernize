@@ -1,3 +1,5 @@
+# Released under the MIT License.
+# Copyright, 2020-2022, by Samuel Williams.
 
 # Rewrite the current gemspec.
 def gemspec
@@ -127,9 +129,9 @@ def directory_glob_for(spec, paths = spec.files)
 	end
 	
 	if dotfiles
-		return "Dir.glob('{#{directories.keys.join(',')}}/**/*', File::FNM_DOTMATCH, base: __dir__)"
+		return "Dir.glob(['{#{directories.keys.join(',')}}/**/*', '*.md'], File::FNM_DOTMATCH, base: __dir__)"
 	else
-		return "Dir['{#{directories.keys.join(',')}}/**/*', base: __dir__]"
+		return "Dir['{#{directories.keys.join(',')}}/**/*', '*.md', base: __dir__]"
 	end
 end
 

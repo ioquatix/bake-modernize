@@ -2,7 +2,7 @@
 
 A gem for modernizing files in your Ruby project.
 
-[![Development Status](https://github.com/ioquatix/bake-modernize/workflows/Development/badge.svg)](https://github.com/ioquatix/bake-modernize/actions?workflow=Development)
+[![Development Status](https://github.com/ioquatix/bake-modernize/workflows/Test/badge.svg)](https://github.com/ioquatix/bake-modernize/actions?workflow=Test)
 
 ## Usage
 
