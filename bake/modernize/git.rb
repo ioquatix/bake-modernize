@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 # Released under the MIT License.
-# Copyright, 2021, by Samuel Williams.
+# Copyright, 2021-2022, by Samuel Williams.
 
 require 'bake/modernize'
 
@@ -13,6 +15,9 @@ def update(root:)
 		system("git", "branch", "-M", "main")
 		system("git", "push", "-u", "origin", "main")
 	end
+	
+	template_root = Bake::Modernize.template_path_for('git')
+	Bake::Modernize.copy_template(template_root, root)
 end
 
 private

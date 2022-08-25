@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Released under the MIT License.
 # Copyright, 2022, by Samuel Williams.
 
@@ -49,6 +51,8 @@ def update(root:)
 	end
 	
 	paths.each do |path, authors|
+		next unless File.exist?(path)
+		
 		case path
 		when /\.rb$/
 			self.update_source_file_authors(path, authors)
@@ -62,8 +66,16 @@ def update_source_file_authors(path, authors)
 	input = File.readlines(path)
 	output = []
 	
-	if input =~ /^\#!/
+	if input.first =~ /^\#!/
 		output.push input.shift
+	end
+	
+	if input.first =~ /^\#.*?\:/
+		output.push input.shift
+		if input.first.chomp.empty?
+			input.shift
+		end
+		output << "\n"
 	end
 	
 	# Remove any existing license:
