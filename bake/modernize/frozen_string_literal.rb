@@ -37,7 +37,7 @@ def update_source_file(path)
 		output.push "# #{key}: #{value}"
 	end
 	
-	unless input.first.chomp.empty?
+	unless input.first&.chomp&.empty?
 		output.push "\n"
 	end
 	
