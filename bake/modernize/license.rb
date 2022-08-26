@@ -84,7 +84,7 @@ def update_source_file_authors(path, authors)
 	end
 	
 	# Remove any empty lines:
-	while input.first.chomp.empty?
+	while input.first&.chomp&.empty?
 		input.shift
 	end
 	
