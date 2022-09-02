@@ -3,7 +3,8 @@
 # Released under the MIT License.
 # Copyright, 2020-2022, by Samuel Williams.
 
-require "bake/modernize/version"
+require_relative 'modernize/license'
+require_relative 'modernize/version'
 require 'build/files/glob'
 require 'fileutils'
 

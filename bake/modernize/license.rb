@@ -3,7 +3,7 @@
 # Released under the MIT License.
 # Copyright, 2022, by Samuel Williams.
 
-require 'console'
+require 'bake/modernize'
 
 LICENSE = <<~LICENSE
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -31,16 +31,15 @@ def license
 end
 
 def update(root:)
-	authors, paths = self.authors(root)
+	authorship = Bake::Modernize::License::Authorship.new
+	authorship.extract(root)
 	
 	buffer = StringIO.new
 	buffer.puts "# MIT License"
 	buffer.puts
 	
-	authors.map do |author, dates|
-		years = dates.map(&:year).uniq
-		
-		buffer.puts "Copyright, #{years.join('-')}, by #{author}.  "
+	authorship.copyrights.each do |copyright|
+		buffer.puts "#{copyright.statement}  "
 	end
 	
 	buffer.puts
@@ -50,19 +49,21 @@ def update(root:)
 		file.write(buffer.string)
 	end
 	
-	paths.each do |path, authors|
+	authorship.paths.each do |path, modifications|
 		next unless File.exist?(path)
 		
 		case path
 		when /\.rb$/
-			self.update_source_file_authors(path, authors)
+			self.update_source_file_authors(authorship, path, modifications)
 		end
 	end
 end
 
 private
 
-def update_source_file_authors(path, authors)
+def update_source_file_authors(authorship, path, modifications)
+	copyrights = authorship.copyrights_for_modifications(modifications)
+	
 	input = File.readlines(path)
 	output = []
 	
@@ -90,10 +91,8 @@ def update_source_file_authors(path, authors)
 	
 	output << "# Released under the MIT License.\n"
 	
-	authors.each do |author, dates|
-		years = dates.map(&:year).uniq
-		
-		output << "# Copyright, #{years.join('-')}, by #{author}.\n"
+	copyrights.each do |copyright|
+		output << "# #{copyright.statement}\n"
 	end
 	
 	output << "\n"
@@ -103,68 +102,4 @@ def update_source_file_authors(path, authors)
 	File.open(path, "w") do |file|
 		file.puts(output)
 	end
-end
-
-def authors(root)
-	paths = {}
-	authors = {}
-	
-	total = `git rev-list --count HEAD`.to_i
-	
-	input, output = IO.pipe
-	pid = Process.spawn("git", "log", "--name-only", "--pretty=format:%ad\t%an", out: output, chdir: root)
-	
-	output.close
-	
-	progress = Console.logger.progress(self, total)
-	
-	while header = (input.readline.chomp rescue nil)
-		break if header.empty?
-		progress.increment
-		
-		date, author = header.split("\t", 2)
-		date = Date.parse(date)
-		
-		while path = (input.readline.chomp rescue nil)
-			break if path.empty?
-			
-			paths[path] ||= {}
-			paths[path][author] ||= []
-			paths[path][author] << date
-			
-			authors[author] ||= []
-			authors[author] << date
-		end
-	end
-	
-	input.close
-	Process.wait2(pid)
-	
-	paths.each do |path, authors|
-		authors.transform_values! do |dates|
-			dates.minmax
-		end
-	end
-	
-	paths.transform_values! do |authors|
-		authors.transform_values! do |dates|
-			dates.minmax
-		end
-		
-		authors.sort_by do |author, dates|
-			dates
-		end
-	end
-	
-	authors.transform_values! do |dates|
-		dates.minmax
-	end
-	
-	authors = authors.to_a
-	
-	authors.sort_by! do |author, dates|
-		dates
-	end
-	
-	return authors, paths
 end
