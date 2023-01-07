@@ -10,7 +10,7 @@ def git
 end
 
 def update(root:)
-	if current_branch != "main"
+	if current_branch == "master"
 		# https://github.com/github/renaming
 		system("git", "branch", "-M", "main")
 		system("git", "push", "-u", "origin", "main")
