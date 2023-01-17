@@ -4,6 +4,7 @@
 # Copyright, 2022, by Samuel Williams.
 
 require 'rugged'
+require 'yaml'
 
 module Bake
 	module Modernize
@@ -42,6 +43,35 @@ module Bake
 				end
 			end
 
+			class Contributors
+				# The default path is the root of the repository and for authors who have contributed to the entire repository or unspecified paths in the past.
+				DEFAULT_PATH = '.'
+				
+				def self.for(root)
+					full_path = File.join(root, '.contributors.yaml')
+					
+					if File.exist?(full_path)
+						contributors = self.new
+						contributors.extract(full_path)
+						return contributors
+					end
+				end
+
+				def initialize
+					@contributions = []
+				end
+				
+				def each(&block)
+					@contributions.each do |contribution|
+						yield (contribution[:path] || DEFAULT_PATH), contribution[:author], contribution[:time]
+					end
+				end
+				
+				def extract(path)
+					YAML.load_file(path, aliases: true, symbolize_names: true)
+				end
+			end
+
 			class Authorship
 				Modification = Struct.new(:author, :time, :path) do
 					def full_name
@@ -66,8 +96,19 @@ module Bake
 				
 				attr :paths
 				
+				def add(author, time, path)
+					@paths[path] ||= []
+					@paths[path] << Modification.new(author, time, path)
+				end
+				
 				def extract(root = Dir.pwd)
 					mailmap = Mailmap.for(root)
+					
+					if contributors = Contributors.for(root)
+						contributors.each do |author, time, path|
+							add(author, time, path)
+						end
+					end
 					
 					walk(Rugged::Repository.discover(root), mailmap: mailmap)
 					
