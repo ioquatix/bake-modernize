@@ -68,7 +68,9 @@ module Bake
 				end
 				
 				def extract(path)
-					YAML.load_file(path, aliases: true, symbolize_names: true, permitted_classes: [Date, Time])
+					@contributions.concat(
+						YAML.load_file(path, aliases: true, symbolize_names: true, permitted_classes: [Date, Time])
+					)
 				end
 			end
 
@@ -96,7 +98,7 @@ module Bake
 				
 				attr :paths
 				
-				def add(author, time, path)
+				def add(path, author, time)
 					@paths[path] ||= []
 					@paths[path] << Modification.new(author, time, path)
 				end
@@ -105,8 +107,8 @@ module Bake
 					mailmap = Mailmap.for(root)
 					
 					if contributors = Contributors.for(root)
-						contributors.each do |author, time, path|
-							add(author, time, path)
+						contributors.each do |path, author, time|
+							add(path, author, time)
 						end
 					end
 					
