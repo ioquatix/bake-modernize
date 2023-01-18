@@ -68,7 +68,7 @@ module Bake
 				end
 				
 				def extract(path)
-					YAML.load_file(path, aliases: true, symbolize_names: true)
+					YAML.load_file(path, aliases: true, symbolize_names: true, permitted_classes: [Date, Time])
 				end
 			end
 
