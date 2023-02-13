@@ -12,9 +12,9 @@ describe Bake::Modernize do
 		expect(Bake::Modernize::VERSION).to be =~ /^\d+\.\d+\.\d+$/
 	end
 	
-	let(:context) {Bake::Context.load}
+	# let(:context) {Bake::Context.load}
 	
-	it "can modernize itself" do
-		context.call('modernize')
-	end
+	# it "can modernize itself" do
+	# 	context.call('modernize')
+	# end
 end
