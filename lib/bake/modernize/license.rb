@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Released under the MIT License.
-# Copyright, 2022, by Samuel Williams.
+# Copyright, 2022-2023, by Samuel Williams.
 
 require 'rugged'
 require 'yaml'
@@ -34,12 +34,26 @@ module Bake
 							# Skip empty lines
 							next if line =~ /^\s*$/
 							# Parse line
-							# Format: Full Name <email@address>
-							line.match(/^(.*) <(.*)>$/) do |match|
-								@names[match[2]] = match[1]
+							
+							
+							user = extract_from_line(line)
+							if commit_email = user[:commit_email] and proper_name = user[:proper_name]
+								@names[commit_email] = proper_name
 							end
 						end
 					end
+				end
+				
+				# Format: Proper Name <proper@email.xx> Commit Name <commit@email.xx>
+				PATTERN = /
+					(?<proper_name>[^<]+)?
+					(\s+<(?<proper_email>[^>]+)>)?
+					(\s+(?<commit_name>[^<]+)?)?
+					\s+<(?<commit_email>[^>]+)>
+				/x
+				
+				def extract_from_line(line)
+					line.match(PATTERN)
 				end
 			end
 

@@ -1,20 +1,20 @@
 # frozen_string_literal: true
 
 # Released under the MIT License.
-# Copyright, 2020-2022, by Samuel Williams.
+# Copyright, 2020-2023, by Samuel Williams.
 
 require 'bake'
 require 'bake/context'
 require 'bake/loaders'
 
-RSpec.describe Bake::Modernize do
+describe Bake::Modernize do
 	it "has a version number" do
-		expect(Bake::Modernize::VERSION).not_to be nil
+		expect(Bake::Modernize::VERSION).to be =~ /^\d+\.\d+\.\d+$/
 	end
 	
-	subject {Bake::Context.load}
+	let(:context) {Bake::Context.load}
 	
 	it "can modernize itself" do
-		subject.call('modernize')
+		context.call('modernize')
 	end
 end
