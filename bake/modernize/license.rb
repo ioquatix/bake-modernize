@@ -71,6 +71,11 @@ def update_source_file_authors(authorship, path, modifications)
 		output.push input.shift
 	end
 	
+	# Drop any old copyright statements.
+	while input.first =~ /Copyright/i
+		input.shift
+	end
+	
 	if input.first =~ /^\#.*?\:/
 		output.push input.shift
 		if input.first.chomp.empty?
