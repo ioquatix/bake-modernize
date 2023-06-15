@@ -4,6 +4,7 @@
 # Copyright, 2022-2023, by Samuel Williams.
 
 require 'bake/modernize'
+require 'markly'
 
 LICENSE = <<~LICENSE
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -48,6 +49,8 @@ def update(root:)
 	File.open("license.md", "w") do |file|
 		file.write(buffer.string)
 	end
+	
+	remove_license(File.join(root, "readme.md"))
 	
 	authorship.paths.each do |path, modifications|
 		next unless File.exist?(path)
@@ -108,3 +111,32 @@ def update_source_file_authors(authorship, path, modifications)
 		file.puts(output)
 	end
 end
+
+def remove_license(readme_path)
+	root = Markly.parse(File.read(readme_path))
+	
+	node = root.first_child
+	
+	while node
+		if node.type == :header && node.to_plaintext =~ /License/
+			break
+		end
+		
+		node = node.next
+		return unless node
+	end
+	
+	while node
+		next_node = node.next
+		node.delete
+		
+		node = next_node
+		
+		if next_node.nil? || node.type == :header
+			break
+		end
+	end
+	
+	File.write(readme_path, root.to_markdown(width: 0))
+end
+
