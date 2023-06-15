@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Released under the MIT License.
-# Copyright, 2020-2022, by Samuel Williams.
+# Copyright, 2020-2023, by Samuel Williams.
 
 require 'bake/modernize'
 
@@ -10,12 +10,6 @@ def editorconfig
 end
 
 def update(root:)
-	editorconfig_path = File.expand_path(".editorconfig", root)
-	
-	if File.exist?(editorconfig_path)
-		FileUtils.rm_rf(editorconfig_path)
-	end
-	
 	template_root = Bake::Modernize.template_path_for('editorconfig')
 	Bake::Modernize.copy_template(template_root, root)
 end
