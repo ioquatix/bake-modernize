@@ -19,6 +19,8 @@ end
 private
 
 DEFAULT_CONTRIBUTING = <<~EOF
+## Contributing
+
 We welcome contributions to this project.
 
 1.  Fork it.
@@ -33,36 +35,9 @@ def update_contributing(readme_path)
 	
 	replacement = Markly.parse(DEFAULT_CONTRIBUTING)
 	
-	node = root.first_child
+	return unless node = root.find_header("Contributing")
 	
-	while node
-		if node.type == :header && node.to_plaintext =~ /Contributing/
-			break
-		end
-		
-		node = node.next
-		return unless node
-	end
-	
-	contributing_header = node
-	node = node.next
-	
-	while node
-		next_node = node.next
-		node.delete
-		
-		node = next_node
-		
-		if next_node.nil? || node.type == :header
-			break
-		end
-	end
-	
-	node = contributing_header
-	replacement.each do |child|
-		node.insert_after(child)
-		node = child
-	end
+	node.replace_section(replacement)
 	
 	File.write(readme_path, root.to_markdown(width: 0))
 end
