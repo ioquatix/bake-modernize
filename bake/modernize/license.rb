@@ -115,26 +115,8 @@ end
 def remove_license(readme_path)
 	root = Markly.parse(File.read(readme_path))
 	
-	node = root.first_child
-	
-	while node
-		if node.type == :header && node.to_plaintext =~ /License/
-			break
-		end
-		
-		node = node.next
-		return unless node
-	end
-	
-	while node
-		next_node = node.next
-		node.delete
-		
-		node = next_node
-		
-		if next_node.nil? || node.type == :header
-			break
-		end
+	if node = root.find_header("License")
+		node.replace_section(nil)
 	end
 	
 	File.write(readme_path, root.to_markdown(width: 0))
