@@ -13,6 +13,10 @@ def gemspec
 	File.write(path, buffer.string)
 end
 
+# The latest end-of-life Ruby version.
+LATEST_END_OF_LIFE_RUBY = ::Gem::Version.new("2.7")
+MINIMUM_RUBY_VERSION = ::Gem::Requirement.new(">= 3.0")
+
 # Rewrite the specified gemspec.
 # @param
 def update(path: default_gemspec_path, output: $stdout)
@@ -86,9 +90,16 @@ def update(path: default_gemspec_path, output: $stdout)
 	
 	if required_ruby_version = spec.required_ruby_version
 		unless required_ruby_version.none?
+			if required_ruby_version.satisfied_by?(LATEST_END_OF_LIFE_RUBY)
+				Console.logger.warn(self, "Required Ruby version #{required_ruby_version} is end-of-life!")
+			end
+			
 			output.puts "\t"
 			output.puts "\tspec.required_ruby_version = #{required_ruby_version.to_s.inspect}"
 		end
+	else
+		output.puts "\t"
+		output.puts "\tspec.required_ruby_version = #{MINIMUM_RUBY_VERSION.to_s.dump}"
 	end
 	
 	if spec.runtime_dependencies.any?
