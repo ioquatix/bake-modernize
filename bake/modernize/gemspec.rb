@@ -185,8 +185,9 @@ def valid_uri?(uri)
 	Sync do
 		internet = Async::HTTP::Internet.new
 		response = internet.head(uri)
+		response.close
 		
-		next response.success?
+		response.success?
 	end
 end
 
