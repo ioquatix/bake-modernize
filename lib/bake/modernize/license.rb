@@ -154,8 +154,14 @@ module Bake
 				def walk(repository, mailmap: nil, show: "HEAD")
 					Rugged::Walker.walk(repository, show: show, sort: DEFAULT_SORT) do |commit|
 						diff = commit.diff
-						diff.find_similar!
-				
+						
+						# We relax the threshold for copy and rename detection because we want to detect files that have been moved and modified more generously.
+						diff.find_similar!(
+							rename_threshold: 25,
+							copy_threshold: 25,
+							ignore_whitespace: true,
+						)
+						
 						diff.each_delta do |delta|
 							old_path = delta.old_file[:path]
 							new_path = delta.new_file[:path]
@@ -164,6 +170,7 @@ module Bake
 							
 							if old_path != new_path
 								# The file was moved, move copyright information too:
+								Console.logger.debug(self, "Moving #{old_path} to #{new_path}", similarity: delta.similarity)
 								@paths[new_path].concat(@paths[old_path])
 							end
 							
