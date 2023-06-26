@@ -25,9 +25,13 @@ module Bake
 				full_path = File.join(destination_path, path.relative_path)
 				
 				if File.directory?(path)
-					FileUtils::Verbose.mkdir_p(full_path)
+					unless File.directory?(full_path)
+						FileUtils.mkdir_p(full_path)
+					end
 				else
-					FileUtils::Verbose.cp(path, full_path)
+					unless FileUtils.identical?(path, full_path)
+						FileUtils::Verbose.cp(path, full_path)
+					end
 				end
 			end
 		end
