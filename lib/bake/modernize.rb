@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Released under the MIT License.
-# Copyright, 2020-2022, by Samuel Williams.
+# Copyright, 2020-2023, by Samuel Williams.
 
 require_relative 'modernize/license'
 require_relative 'modernize/version'
@@ -18,6 +18,14 @@ module Bake
 			TEMPLATE_ROOT + path
 		end
 		
+		def self.stale?(source_path, destination_path)
+			if File.exist?(destination_path)
+				return !FileUtils.identical?(source_path, destination_path)
+			end
+			
+			return true
+		end
+		
 		def self.copy_template(source_path, destination_path)
 			glob = Build::Files::Glob.new(source_path, '**/*')
 			
@@ -29,7 +37,7 @@ module Bake
 						FileUtils.mkdir_p(full_path)
 					end
 				else
-					unless FileUtils.identical?(path, full_path)
+					if stale?(path, full_path)
 						FileUtils::Verbose.cp(path, full_path)
 					end
 				end
