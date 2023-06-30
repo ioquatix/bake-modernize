@@ -122,9 +122,13 @@ module Bake
 			end
 
 			class Authorship
-				Modification = Struct.new(:author, :time, :path) do
+				Modification = Struct.new(:author, :time, :path, :id) do
 					def full_name
 						author[:name]
+					end
+					
+					def key
+						self.id || "#{self.author[:email]}:#{self.time.iso8601}"
 					end
 				end
 				
@@ -140,14 +144,17 @@ module Bake
 				end
 				
 				def initialize
-					@paths = {}
+					@paths = Hash.new{|h,k| h[k] = []}
+					@commits = Hash.new{|h,k| h[k] = []}
 				end
 				
 				attr :paths
 				
-				def add(path, author, time)
-					@paths[path] ||= []
-					@paths[path] << Modification.new(author, time, path)
+				def add(path, author, time, id = nil)
+					modification = Modification.new(author, time, path, id)
+					
+					@commits[modification.key] << modification
+					@paths[path] << modification
 				end
 				
 				def extract(root = Dir.pwd)
@@ -168,9 +175,9 @@ module Bake
 				def sorted_authors
 					authors = Hash.new{|h,k| h[k] = 0}
 					
-					@paths.each do |path, modifications|
-						modifications.each do |modification|
-							authors[modification.full_name] += 1
+					@commits.each do |key, modifications|
+						modifications.map(&:full_name).uniq.each do |full_name|
+							authors[full_name] += 1
 						end
 					end
 					
@@ -230,7 +237,7 @@ module Bake
 								end
 							end
 							
-							@paths[new_path] << Modification.new(author, commit.time, new_path)
+							add(new_path, author, commit.time, commit.oid)
 						end
 					end
 				end
