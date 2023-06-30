@@ -165,6 +165,18 @@ module Bake
 					return self
 				end
 				
+				def sorted_authors
+					authors = Hash.new{|h,k| h[k] = 0}
+					
+					@paths.each do |path, modifications|
+						modifications.each do |modification|
+							authors[modification.full_name] += 1
+						end
+					end
+					
+					return authors.sort_by{|k,v| [-v, k]}.map(&:first)
+				end
+				
 				def copyrights
 					copyrights_for_modifications(@paths.values.flatten)
 				end
