@@ -9,6 +9,39 @@ require 'yaml'
 module Bake
 	module Modernize
 		module License
+			GIT_BLAME_IGNORE_REVS = ".git-blame-ignore-revs"
+			
+			class SkipList
+				def self.for(root)
+					full_path = File.join(root, GIT_BLAME_IGNORE_REVS)
+					
+					if File.exist?(full_path)
+						skip_list = self.new
+						skip_list.extract(full_path)
+						return skip_list
+					end
+				end
+				
+				def initialize(revisions = [])
+					@revisions = Set.new(revisions)
+				end
+				
+				def extract(path)
+					File.open(path, 'r') do |file|
+						file.each_line do |line|
+							# Skip empty lines and comments
+							next if line =~ /^\s*(#|$)/
+							# Parse line
+							@revisions << line.strip
+						end
+					end
+				end
+				
+				def ignore?(commit)
+					@revisions.include?(commit.oid)
+				end
+			end
+			
 			class Mailmap
 				def self.for(root)
 					full_path = File.join(root, '.mailmap')
@@ -119,6 +152,7 @@ module Bake
 				
 				def extract(root = Dir.pwd)
 					mailmap = Mailmap.for(root)
+					skip_list = SkipList.for(root)
 					
 					if contributors = Contributors.for(root)
 						contributors.each do |path, author, time|
@@ -126,7 +160,7 @@ module Bake
 						end
 					end
 					
-					walk(Rugged::Repository.discover(root), mailmap: mailmap)
+					walk(Rugged::Repository.discover(root), mailmap: mailmap, skip_list: skip_list)
 					
 					return self
 				end
@@ -151,8 +185,10 @@ module Bake
 				
 				DEFAULT_SORT = Rugged::SORT_DATE | Rugged::SORT_TOPO | Rugged::SORT_REVERSE
 				
-				def walk(repository, mailmap: nil, show: "HEAD")
+				def walk(repository, mailmap: nil, skip_list: nil, show: "HEAD")
 					Rugged::Walker.walk(repository, show: show, sort: DEFAULT_SORT) do |commit|
+						next if skip_list&.ignore?(commit)
+						
 						diff = commit.diff
 						
 						# We relax the threshold for copy and rename detection because we want to detect files that have been moved and modified more generously.
