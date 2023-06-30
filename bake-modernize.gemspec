@@ -26,6 +26,4 @@ Gem::Specification.new do |spec|
 	spec.add_dependency "build-files", "~> 1.6"
 	spec.add_dependency "markly", "~> 0.8"
 	spec.add_dependency "rugged"
-	
-	spec.add_development_dependency "sus"
 end

@@ -110,9 +110,11 @@ def update(path: default_gemspec_path, output: $stdout)
 	end
 	
 	if spec.development_dependencies.any?
-		output.puts "\t"
-		spec.development_dependencies.sort.each do |dependency|
-			output.puts "\tspec.add_development_dependency #{format_dependency(dependency)}"
+		unless move_development_dependencies(spec.development_dependencies)
+			output.puts "\t"
+			spec.development_dependencies.sort.each do |dependency|
+				output.puts "\tspec.add_development_dependency #{format_dependency(dependency)}"
+			end
 		end
 	end
 	
@@ -235,4 +237,27 @@ def sorted_authors(spec)
 	input.close
 	
 	return authors.sort_by{|k,v| [-v, k]}.map(&:first)
+end
+
+IGNORE_GEMS = %w[
+	bundler
+].freeze
+
+def move_development_dependencies(dependencies)
+	gemfile_path = File.expand_path("gems.rb")
+	
+	if File.exist?(gemfile_path)
+		File.open(gemfile_path, "a") do |file|
+			file.puts
+			file.puts "# Moved Development Dependencies"
+			
+			dependencies.each do |dependency|
+				next if IGNORE_GEMS.include?(dependency.name)
+				
+				file.puts "gem #{format_dependency(dependency)}"
+			end
+		end
+		
+		true
+	end
 end
