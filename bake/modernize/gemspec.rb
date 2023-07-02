@@ -25,7 +25,7 @@ def update(path: default_gemspec_path, output: $stdout)
 	version_path = version_path(root)
 	
 	constant = File.read(version_path)
-		.scan(/module\s+(.*?)$/)
+		.scan(/(class|module)\s+(.*?)$/)
 		.flatten
 		.join("::")
 	
