@@ -21,6 +21,8 @@ Gem::Specification.new do |spec|
 	
 	spec.files = Dir.glob(['{bake,lib,template}/**/*', '*.md'], File::FNM_DOTMATCH, base: __dir__)
 	
+	spec.required_ruby_version = ">= 3.0"
+	
 	spec.add_dependency "async-http"
 	spec.add_dependency "bake"
 	spec.add_dependency "build-files", "~> 1.6"
