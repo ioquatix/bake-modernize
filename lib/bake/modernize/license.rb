@@ -89,7 +89,8 @@ module Bake
 					line.match(PATTERN)
 				end
 			end
-
+			
+			# Extract contributors from a YAML file which can be generated from another repository.
 			class Contributors
 				# The default path is the root of the repository and for authors who have contributed to the entire repository or unspecified paths in the past.
 				DEFAULT_PATH = '.'
@@ -110,14 +111,31 @@ module Bake
 				
 				def each(&block)
 					@contributions.each do |contribution|
-						yield (contribution[:path] || DEFAULT_PATH), contribution[:author], contribution[:time]
+						author = contribution[:author]
+						time = contribution[:time]
+						
+						paths_for(contribution) do |path|
+							yield path, author, time
+						end
 					end
 				end
 				
 				def extract(path)
 					@contributions.concat(
-						YAML.load_file(path, aliases: true, symbolize_names: true, permitted_classes: [Date, Time])
+						YAML.load_file(path, aliases: true, symbolize_names: true, permitted_classes: [Symbol, Date, Time])
 					)
+				end
+				
+				def paths_for(contribution)
+					if path = contribution[:path]
+						yield path
+					# elsif paths = contribution[:paths]
+					# 	paths.each do |path|
+					# 		yield path
+					# 	end
+					else
+						yield DEFAULT_PATH
+					end
 				end
 			end
 
@@ -129,6 +147,15 @@ module Bake
 					
 					def key
 						self.id || "#{self.author[:email]}:#{self.time.iso8601}"
+					end
+					
+					def to_h
+						{
+							id: id,
+							time: time,
+							path: path,
+							author: author,
+						}
 					end
 				end
 				
@@ -149,6 +176,7 @@ module Bake
 				end
 				
 				attr :paths
+				attr :commits
 				
 				def add(path, author, time, id = nil)
 					modification = Modification.new(author, time, path, id)
