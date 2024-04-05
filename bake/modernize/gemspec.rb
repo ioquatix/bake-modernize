@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Released under the MIT License.
-# Copyright, 2020-2023, by Samuel Williams.
+# Copyright, 2020-2024, by Samuel Williams.
 
 # Rewrite the current gemspec.
 def gemspec
@@ -29,8 +29,11 @@ def update(path: default_gemspec_path, output: $stdout)
 		.flatten
 		.join("::")
 	
+	normalize_homepage(spec)
+	
 	spec.metadata["funding_uri"] ||= detect_funding_uri(spec)
 	spec.metadata["documentation_uri"] ||= detect_documentation_uri(spec)
+	spec.metadata["source_code_uri"] ||= detect_source_code_uri(spec)
 	
 	spec.authors = sorted_authors(Dir.pwd)
 	
@@ -184,7 +187,13 @@ def valid_uri?(uri)
 	end
 end
 
-GITHUB_PROJECT = /github.com\/(?<account>.*?)\/(?<project>.*?)\/?/
+GITHUB_PROJECT = /github.com\/(?<account>.*?)\/(?<project>.*?)(\/|\Z)/
+
+def normalize_homepage(spec)
+	if homepage = spec.homepage
+		spec.homepage = homepage.chomp("/")
+	end
+end
 
 def detect_funding_uri(spec)
 	if match = spec.homepage&.match(GITHUB_PROJECT)
@@ -208,6 +217,15 @@ def detect_documentation_uri(spec)
 		if valid_uri?(documentation_uri)
 			return documentation_uri
 		end
+	end
+end
+
+def detect_source_code_uri(spec)
+	if match = spec.homepage.match(GITHUB_PROJECT)
+		account = match[:account]
+		project = match[:project]
+		
+		return "https://github.com/#{account}/#{project}.git"
 	end
 end
 
