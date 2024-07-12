@@ -49,6 +49,13 @@ def update_filenames(root)
 	if development_path.exist?
 		FileUtils::Verbose.mv(development_path, test_path)
 	end
+	
+	# Move coverage.yaml to test-coverage.yaml
+	coverage_path = actions_root + "coverage.yaml"
+	test_coverage_path = actions_root + "test-coverage.yaml"
+	if coverage_path.exist?
+		FileUtils::Verbose.mv(coverage_path, test_coverage_path)
+	end
 end
 
 def repository_url(root)
