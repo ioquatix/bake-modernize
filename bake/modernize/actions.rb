@@ -29,6 +29,8 @@ def update(root:)
 	if readme_path
 		update_badges(readme_path, repository_url(root))
 	end
+	
+	system("bundle", "add", "--group", "documentation", "decode", chdir: root)
 end
 
 private
