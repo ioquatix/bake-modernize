@@ -90,8 +90,6 @@ module Bake
 					end
 				end
 				
-				private
-				
 				# Format: Proper Name <proper@email.xx> Commit Name <commit@email.xx>
 				PATTERN = /
 					(?<proper_name>[^<]+)?
@@ -100,6 +98,7 @@ module Bake
 					\s+<(?<commit_email>[^>]+)>
 				/x
 				
+				# Extract the mailmap format from a line of input.
 				def extract_from_line(line)
 					line.match(PATTERN)
 				end
