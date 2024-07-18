@@ -8,16 +8,20 @@ require_relative 'modernize/version'
 require 'build/files/glob'
 require 'fileutils'
 
+# @namespace
 module Bake
+	# @namespace
 	module Modernize
 		ROOT = File.expand_path("../..", __dir__)
 		
 		TEMPLATE_ROOT = Build::Files::Path.new(ROOT) + "template"
 		
+		# Compute the template root path relative to the gem root.
 		def self.template_path_for(path)
 			TEMPLATE_ROOT + path
 		end
 		
+		# Check if the destination path is stale compared to the source path.
 		def self.stale?(source_path, destination_path)
 			if File.exist?(destination_path)
 				return !FileUtils.identical?(source_path, destination_path)
@@ -26,6 +30,10 @@ module Bake
 			return true
 		end
 		
+		# Copy files from the source path to the destination path.
+		#
+		# @parameter source_path [String] The source path.
+		# @parameter destination_path [String] The destination path.
 		def self.copy_template(source_path, destination_path)
 			glob = Build::Files::Glob.new(source_path, '**/*')
 			

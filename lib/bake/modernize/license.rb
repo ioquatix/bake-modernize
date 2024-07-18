@@ -8,10 +8,13 @@ require 'yaml'
 
 module Bake
 	module Modernize
+		# Support the analysis of authorship and license details.
 		module License
 			GIT_BLAME_IGNORE_REVS = ".git-blame-ignore-revs"
 			
+			# Represents revisions to skip when analyzing authorship.
 			class SkipList
+				# Load the skip list from a directory.
 				def self.for(root)
 					full_path = File.join(root, GIT_BLAME_IGNORE_REVS)
 					
@@ -22,10 +25,14 @@ module Bake
 					end
 				end
 				
+				# Create a new skip list with the given revisions.
+				#
+				# @parameter revisions [Array(String)] The revisions to skip.
 				def initialize(revisions = [])
 					@revisions = Set.new(revisions)
 				end
 				
+				# Extract the revisions from the given path.
 				def extract(path)
 					File.open(path, 'r') do |file|
 						file.each_line do |line|
@@ -37,12 +44,15 @@ module Bake
 					end
 				end
 				
+				# Check if the given commit should be ignored.
 				def ignore?(commit)
 					@revisions.include?(commit.oid)
 				end
 			end
 			
+			# Represents a mailmap file which maps commit emails to proper names.
 			class Mailmap
+				# Load the mailmap from a directory.
 				def self.for(root)
 					full_path = File.join(root, '.mailmap')
 					
@@ -53,12 +63,15 @@ module Bake
 					end
 				end
 				
+				# Create a new, empty, mailmap.
 				def initialize
 					@names = {}
 				end
 				
+				# @attribute [Hash(String, String)] The mapping of commit emails to proper names.
 				attr :names
 				
+				# Extract the mailmap from the given path.
 				def extract(path)
 					File.open(path, 'r') do |file|
 						file.each_line do |line|
@@ -85,6 +98,7 @@ module Bake
 					\s+<(?<commit_email>[^>]+)>
 				/x
 				
+				# Extract the mailmap format from a line of input.
 				def extract_from_line(line)
 					line.match(PATTERN)
 				end
@@ -95,6 +109,7 @@ module Bake
 				# The default path is the root of the repository and for authors who have contributed to the entire repository or unspecified paths in the past.
 				DEFAULT_PATH = '.'
 				
+				# Load contributors from a directory.
 				def self.for(root)
 					full_path = File.join(root, '.contributors.yaml')
 					
@@ -104,11 +119,13 @@ module Bake
 						return contributors
 					end
 				end
-
+				
+				# Create a new, empty, contributors list.
 				def initialize
 					@contributions = []
 				end
 				
+				# Iterate over each contribution.
 				def each(&block)
 					@contributions.each do |contribution|
 						author = contribution[:author]
@@ -120,13 +137,17 @@ module Bake
 					end
 				end
 				
+				# Extract the contributors from the given path.
 				def extract(path)
 					@contributions.concat(
 						YAML.load_file(path, aliases: true, symbolize_names: true, permitted_classes: [Symbol, Date, Time])
 					)
 				end
 				
+				# @attribute [Array(Hash)] The list of paths from a given contribution.
 				def paths_for(contribution)
+					return to_enum(:paths_for, contribution) unless block_given?
+					
 					if path = contribution[:path]
 						yield path
 					# elsif paths = contribution[:paths]
@@ -138,8 +159,10 @@ module Bake
 					end
 				end
 			end
-
+			
+			# Represents the authorship of a repository.
 			class Authorship
+				# Represents a modification to a file.
 				Modification = Struct.new(:author, :time, :path, :id) do
 					def full_name
 						author[:name]
@@ -159,6 +182,7 @@ module Bake
 					end
 				end
 				
+				# Represents the copyright for an author.
 				Copyright = Struct.new(:dates, :author) do
 					def <=> other
 						self.to_a <=> other.to_a
@@ -170,14 +194,19 @@ module Bake
 					end
 				end
 				
+				# Create a new, empty, authorship.
 				def initialize
 					@paths = Hash.new{|h,k| h[k] = []}
 					@commits = Hash.new{|h,k| h[k] = []}
 				end
 				
+				# @attribute [Hash(String, Array(Modification))] The mapping of paths to modifications.
 				attr :paths
+				
+				# @attribute [Hash(String, Array(Modification))] The mapping of commits to modifications.
 				attr :commits
 				
+				# Add a modification to the authorship.
 				def add(path, author, time, id = nil)
 					modification = Modification.new(author, time, path, id)
 					
@@ -185,6 +214,7 @@ module Bake
 					@paths[path] << modification
 				end
 				
+				# Extract the authorship from the given root directory.
 				def extract(root = Dir.pwd)
 					mailmap = Mailmap.for(root)
 					skip_list = SkipList.for(root)
@@ -200,6 +230,7 @@ module Bake
 					return self
 				end
 				
+				# Authors, sorted by contribution date.
 				def sorted_authors
 					authors = Hash.new{|h,k| h[k] = 0}
 					
@@ -212,14 +243,17 @@ module Bake
 					return authors.sort_by{|k,v| [-v, k]}.map(&:first)
 				end
 				
+				# All copyrights.
 				def copyrights
 					copyrights_for_modifications(@paths.values.flatten)
 				end
 				
+				# All copyrights for a given path.
 				def copyrights_for_path(path)
 					copyrights_for_modifications(@paths[path])
 				end
 				
+				# All copyrights for a given modification.
 				def copyrights_for_modifications(modifications)
 					authors = modifications.group_by{|modification| modification.full_name}
 					
