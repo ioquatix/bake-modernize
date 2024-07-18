@@ -9,7 +9,6 @@ gemspec
 
 group :maintenance, optional: true do
 	gem "bake-gem"
-	gem "rubocop"
 	
 	gem "utopia-project"
 end
@@ -18,6 +17,7 @@ group :test do
 	gem "sus"
 	gem "covered"
 	gem "decode"
+	gem "rubocop"
 	
 	gem "bake-test"
 	gem "bake-test-external"

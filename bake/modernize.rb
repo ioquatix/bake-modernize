@@ -10,11 +10,10 @@ def modernize
 		'modernize:actions',
 		'modernize:editorconfig',
 		'modernize:gemfile',
+		'modernize:rubocop',
 		'modernize:signing',
 		'modernize:gemspec',
 		'modernize:license',
-		'modernize:frozen_string_literal',
 		'modernize:contributing',
-		'modernize:rubocop',
 	)
 end
