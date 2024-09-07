@@ -3,7 +3,7 @@
 # Released under the MIT License.
 # Copyright, 2023, by Samuel Williams.
 
-require 'bake/modernize/license'
+require "bake/modernize/license"
 
 describe Bake::Modernize::License::Mailmap do
 	let(:mailmap) {subject.new}

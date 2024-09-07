@@ -3,8 +3,8 @@
 # Released under the MIT License.
 # Copyright, 2022-2023, by Samuel Williams.
 
-require 'bake/modernize'
-require 'markly'
+require "bake/modernize"
+require "markly"
 
 LICENSE = <<~LICENSE
 Permission is hereby granted, free of charge, to any person obtaining a copy

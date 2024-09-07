@@ -3,7 +3,7 @@
 # Released under the MIT License.
 # Copyright, 2020-2022, by Samuel Williams.
 
-require 'bake/modernize'
+require "bake/modernize"
 
 def gemfile
 	update(root: Dir.pwd)

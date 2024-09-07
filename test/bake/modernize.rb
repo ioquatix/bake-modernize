@@ -3,9 +3,9 @@
 # Released under the MIT License.
 # Copyright, 2020-2023, by Samuel Williams.
 
-require 'bake'
-require 'bake/context'
-require 'bake/loaders'
+require "bake"
+require "bake/context"
+require "bake/loaders"
 
 describe Bake::Modernize do
 	it "has a version number" do

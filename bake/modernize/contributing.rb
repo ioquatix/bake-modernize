@@ -3,15 +3,15 @@
 # Released under the MIT License.
 # Copyright, 2023-2024, by Samuel Williams.
 
-require 'bake/modernize'
-require 'markly'
+require "bake/modernize"
+require "markly"
 
 def contributing
 	if conduct_path = Dir["conduct.md"]
 		FileUtils.rm_f(conduct_path)
 	end
 	
-	update_contributing(File.join(Dir.pwd, 'readme.md'))
+	update_contributing(File.join(Dir.pwd, "readme.md"))
 end
 
 private

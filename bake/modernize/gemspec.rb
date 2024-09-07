@@ -51,7 +51,7 @@ def update(path: default_gemspec_path, output: $stdout)
 	output.puts "\tspec.authors = #{spec.authors.inspect}"
 	output.puts "\tspec.license = #{spec.license.inspect}"
 	
-	certificate_path = File.expand_path('release.cert', root)
+	certificate_path = File.expand_path("release.cert", root)
 	
 	if File.exist?(certificate_path)
 		output.puts "\t"
@@ -76,7 +76,7 @@ def update(path: default_gemspec_path, output: $stdout)
 	output.puts "\t"
 	output.puts "\tspec.files = #{directory_glob_for(spec)}"
 	
-	if spec.require_paths != ['lib']
+	if spec.require_paths != ["lib"]
 		output.puts "\tspec.require_paths = ['lib']"
 	end
 	
@@ -132,7 +132,7 @@ def directory_glob_for(spec, paths = spec.files)
 			directories[directory] = true
 		end
 		
-		if basename.start_with?('.')
+		if basename.start_with?(".")
 			dotfiles = true
 		end
 	end
@@ -174,8 +174,8 @@ def version_path(root)
 	Dir["lib/**/version.rb", base: root].first
 end
 
-require 'async'
-require 'async/http/internet'
+require "async"
+require "async/http/internet"
 
 def valid_uri?(uri)
 	Sync do

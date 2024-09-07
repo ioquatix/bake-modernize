@@ -3,8 +3,8 @@
 # Released under the MIT License.
 # Copyright, 2024, by Samuel Williams.
 
-require 'bake/modernize'
-require 'build/files/system'
+require "bake/modernize"
+require "build/files/system"
 
 def rubocop
 	update(root: Dir.pwd)
@@ -13,7 +13,7 @@ end
 def update(root:)
 	system("bundle", "add", "rubocop", "--group", "test", chdir: root)
 	
-	template_root = Bake::Modernize.template_path_for('rubocop')
+	template_root = Bake::Modernize.template_path_for("rubocop")
 	Bake::Modernize.copy_template(template_root, root)
 	
 	system("bundle", "update", chdir: root)

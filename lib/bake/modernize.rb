@@ -3,10 +3,10 @@
 # Released under the MIT License.
 # Copyright, 2020-2024, by Samuel Williams.
 
-require_relative 'modernize/license'
-require_relative 'modernize/version'
-require 'build/files/glob'
-require 'fileutils'
+require_relative "modernize/license"
+require_relative "modernize/version"
+require "build/files/glob"
+require "fileutils"
 
 # @namespace
 module Bake
@@ -35,7 +35,7 @@ module Bake
 		# @parameter source_path [String] The source path.
 		# @parameter destination_path [String] The destination path.
 		def self.copy_template(source_path, destination_path)
-			glob = Build::Files::Glob.new(source_path, '**/*')
+			glob = Build::Files::Glob.new(source_path, "**/*")
 			
 			glob.each do |path|
 				full_path = File.join(destination_path, path.relative_path)

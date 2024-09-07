@@ -3,8 +3,8 @@
 # Released under the MIT License.
 # Copyright, 2022-2024, by Samuel Williams.
 
-require 'rugged'
-require 'yaml'
+require "rugged"
+require "yaml"
 
 module Bake
 	module Modernize
@@ -34,7 +34,7 @@ module Bake
 				
 				# Extract the revisions from the given path.
 				def extract(path)
-					File.open(path, 'r') do |file|
+					File.open(path, "r") do |file|
 						file.each_line do |line|
 							# Skip empty lines and comments
 							next if line =~ /^\s*(#|$)/
@@ -54,7 +54,7 @@ module Bake
 			class Mailmap
 				# Load the mailmap from a directory.
 				def self.for(root)
-					full_path = File.join(root, '.mailmap')
+					full_path = File.join(root, ".mailmap")
 					
 					if File.exist?(full_path)
 						mailmap = self.new
@@ -73,7 +73,7 @@ module Bake
 				
 				# Extract the mailmap from the given path.
 				def extract(path)
-					File.open(path, 'r') do |file|
+					File.open(path, "r") do |file|
 						file.each_line do |line|
 							# Skip comments
 							next if line =~ /^#/
@@ -107,11 +107,11 @@ module Bake
 			# Extract contributors from a YAML file which can be generated from another repository.
 			class Contributors
 				# The default path is the root of the repository and for authors who have contributed to the entire repository or unspecified paths in the past.
-				DEFAULT_PATH = '.'
+				DEFAULT_PATH = "."
 				
 				# Load contributors from a directory.
 				def self.for(root)
-					full_path = File.join(root, '.contributors.yaml')
+					full_path = File.join(root, ".contributors.yaml")
 					
 					if File.exist?(full_path)
 						contributors = self.new

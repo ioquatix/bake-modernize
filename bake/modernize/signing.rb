@@ -3,7 +3,7 @@
 # Released under the MIT License.
 # Copyright, 2021-2022, by Samuel Williams.
 
-require 'bake/modernize'
+require "bake/modernize"
 
 def signing
 	update(root: Dir.pwd)

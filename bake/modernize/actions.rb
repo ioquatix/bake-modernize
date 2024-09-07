@@ -3,10 +3,10 @@
 # Released under the MIT License.
 # Copyright, 2020-2024, by Samuel Williams.
 
-require 'bake/modernize'
-require 'rugged'
-require 'markly'
-require 'build/files/system'
+require "bake/modernize"
+require "rugged"
+require "markly"
+require "build/files/system"
 
 def actions
 	update(root: Dir.pwd)
@@ -21,7 +21,7 @@ def update(root:)
 	
 	update_filenames(root)
 
-	template_root = Bake::Modernize.template_path_for('actions')
+	template_root = Bake::Modernize.template_path_for("actions")
 	Bake::Modernize.copy_template(template_root, root)
 	
 	readme_path = ["README.md", "readme.md"].find{|path| File.exist?(File.expand_path(path, root))}
@@ -62,7 +62,7 @@ end
 
 def repository_url(root)
 	repository = Rugged::Repository.discover(root)
-	git_url = repository.remotes['origin'].url
+	git_url = repository.remotes["origin"].url
 	
 	if match = git_url.match(/@(?<url>.*?):(?<path>.*?)(\.git)?\z/)
 		return "https://#{match[:url]}/#{match[:path]}"

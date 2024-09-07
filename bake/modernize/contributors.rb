@@ -6,7 +6,7 @@
 def initialize(context)
 	super
 	
-	require 'bake/modernize/license'
+	require "bake/modernize/license"
 end
 
 # Extract changes from a repository and generate a list of contributors.

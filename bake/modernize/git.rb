@@ -3,7 +3,7 @@
 # Released under the MIT License.
 # Copyright, 2021-2023, by Samuel Williams.
 
-require 'bake/modernize'
+require "bake/modernize"
 
 def git
 	update(root: Dir.pwd)
@@ -18,7 +18,7 @@ def update(root:)
 	
 	current_gitignore_custom_lines = self.current_gitignore_custom_lines(root)
 	
-	template_root = Bake::Modernize.template_path_for('git')
+	template_root = Bake::Modernize.template_path_for("git")
 	Bake::Modernize.copy_template(template_root, root)
 	
 	if current_gitignore_custom_lines
@@ -44,7 +44,7 @@ def current_gitignore_custom_lines(root)
 end
 
 def current_branch
-	require 'open3'
+	require "open3"
 	
 	output, status = Open3.capture2("git", "branch", "--show-current")
 	

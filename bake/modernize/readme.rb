@@ -3,8 +3,8 @@
 # Released under the MIT License.
 # Copyright, 2022, by Samuel Williams.
 
-require 'bake/modernize'
-require 'build/files/system'
+require "bake/modernize"
+require "build/files/system"
 
 def readme
 	update(root: Dir.pwd)
