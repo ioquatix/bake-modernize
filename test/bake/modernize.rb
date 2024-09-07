@@ -5,7 +5,6 @@
 
 require "bake"
 require "bake/context"
-require "bake/loaders"
 
 describe Bake::Modernize do
 	it "has a version number" do
