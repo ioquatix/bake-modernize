@@ -55,8 +55,8 @@ def update(path: default_gemspec_path, output: $stdout)
 	
 	if File.exist?(certificate_path)
 		output.puts "\t"
-		output.puts "\tspec.cert_chain  = ['release.cert']"
-		output.puts "\tspec.signing_key = File.expand_path('~/.gem/release.pem')"
+		output.puts "\tspec.cert_chain  = [\"release.cert\"]"
+		output.puts "\tspec.signing_key = File.expand_path(\"~/.gem/release.pem\")"
 	end
 	
 	if spec.homepage and !spec.homepage.empty?
@@ -77,7 +77,7 @@ def update(path: default_gemspec_path, output: $stdout)
 	output.puts "\tspec.files = #{directory_glob_for(spec)}"
 	
 	if spec.require_paths != ["lib"]
-		output.puts "\tspec.require_paths = ['lib']"
+		output.puts "\tspec.require_paths = [\"lib\"]"
 	end
 	
 	if executables = spec.executables and executables.any?
@@ -138,9 +138,9 @@ def directory_glob_for(spec, paths = spec.files)
 	end
 	
 	if dotfiles
-		return "Dir.glob(['{#{directories.keys.join(',')}}/**/*', '*.md'], File::FNM_DOTMATCH, base: __dir__)"
+		return "Dir.glob([\"{#{directories.keys.join(',')}}/**/*\", \"*.md\"], File::FNM_DOTMATCH, base: __dir__)"
 	else
-		return "Dir['{#{directories.keys.join(',')}}/**/*', '*.md', base: __dir__]"
+		return "Dir[\"{#{directories.keys.join(',')}}/**/*\", \"*.md\", base: __dir__]"
 	end
 end
 
