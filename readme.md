@@ -6,17 +6,15 @@ A gem for modernizing files in your Ruby project.
 
 ## Usage
 
-Ensure your project is backed up (e.g. using git).
-
-``` ruby
-$ bake modernize
-```
-
-It will modernize your project.
+Please see the [project documentation](https://ioquatix.github.io/bake-modernize/) for more details.
 
 ## Releases
 
-There are no current releases.
+Please see the [project releases](https://ioquatix.github.io/bake-modernize/releases/index) for all releases.
+
+### v0.33.0
+
+  - Add `modernize:releases` to add release notes.
 
 ## Contributing
 
