@@ -14,6 +14,10 @@ $ bake modernize
 
 It will modernize your project.
 
+## Releases
+
+There are no current releases.
+
 ## Contributing
 
 We welcome contributions to this project.
