@@ -14,7 +14,7 @@ def gemspec
 end
 
 # The latest end-of-life Ruby version.
-MINIMUM_RUBY_VERSION = ::Gem::Requirement.new(">= 3.1")
+MINIMUM_RUBY_VERSION = ::Gem::Requirement.new(">= 3.2")
 
 # Rewrite the specified gemspec.
 # @param
