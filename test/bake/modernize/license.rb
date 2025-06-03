@@ -32,3 +32,17 @@ describe Bake::Modernize::License::Mailmap do
 		expect(user[:commit_email]).to be == "ioquatix@example.org"
 	end
 end
+
+describe Bake::Modernize::License::Authorship::Copyright do
+	it "adds period when author doesn't end with one" do
+		copyright = subject.new([Time.new(2023), Time.new(2024)], "Samuel Williams")
+		
+		expect(copyright.statement).to be == "Copyright, 2023-2024, by Samuel Williams."
+	end
+	
+	it "doesn't add extra period when author already ends with one" do
+		copyright = subject.new([Time.new(2023), Time.new(2024)], "Widgets Inc.")
+		
+		expect(copyright.statement).to be == "Copyright, 2023-2024, by Widgets Inc."
+	end
+end

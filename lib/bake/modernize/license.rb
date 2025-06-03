@@ -190,7 +190,8 @@ module Bake
 					
 					def statement
 						years = self.dates.map(&:year).uniq
-						return "Copyright, #{years.join('-')}, by #{author}."
+						period = author.end_with?(".") ? "" : "."
+						return "Copyright, #{years.join('-')}, by #{author}#{period}"
 					end
 				end
 				
