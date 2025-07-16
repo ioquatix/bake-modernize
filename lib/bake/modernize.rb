@@ -5,6 +5,7 @@
 
 require_relative "modernize/license"
 require_relative "modernize/version"
+
 require "build/files/glob"
 require "fileutils"
 
