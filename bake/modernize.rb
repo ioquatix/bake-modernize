@@ -15,5 +15,6 @@ def modernize
 		"modernize:gemspec",
 		"modernize:license",
 		"modernize:contributing",
+		"modernize:copilot",
 	)
 end

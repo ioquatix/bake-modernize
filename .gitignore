@@ -5,3 +5,4 @@
 /gems.locked
 /.covered.db
 /external
+vendor/
