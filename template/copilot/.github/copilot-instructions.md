@@ -19,6 +19,6 @@ When working on this project, consult the `agent.md` file for project-specific g
 
 ## Best Practices
 
-- Always run `bundle install && bundle exec bake agent:context:install` when setting up a new development environment
-- Refer to `agent.md` before making significant architectural changes
-- Keep the context information up-to-date as the project evolves
+- Always run `bundle install && bundle exec bake agent:context:install` when setting up a new development environment.
+- Refer to `agent.md` before making significant architectural changes.
+- Keep the context information up-to-date as the project evolves.
