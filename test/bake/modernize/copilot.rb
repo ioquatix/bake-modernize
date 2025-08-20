@@ -6,7 +6,7 @@
 require "fileutils"
 
 describe "modernize:copilot" do
-	let(:test_root) { File.join(__dir__, "../..", "..", "tmp", "copilot_test") }
+	let(:test_root) {File.join(__dir__, "../..", "..", "tmp", "copilot_test")}
 	
 	before do
 		FileUtils.mkdir_p(test_root)
