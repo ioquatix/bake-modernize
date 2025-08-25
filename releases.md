@@ -1,6 +1,6 @@
 # Releases
 
-## Unreleased
+## v0.43.0
 
   - Improved copilot instructions for using agent context.
 
