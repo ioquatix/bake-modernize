@@ -1,24 +1,20 @@
 # GitHub Copilot Instructions
 
-This project uses `bake` for task automation and project management. To get better assistance from GitHub Copilot when working on this project:
+## Use Agent Context
 
-## Getting Project Context
+When working on this project, consult the `agent.md` file for project-specific guidelines, architecture decisions, and development patterns. This file contains curated information that will help you make better decisions aligned with the project's goals and standards.
 
-Use the following command to install project context for AI agents:
+If the file does not exist, you will need to install it, by running the following command:
 
 ```bash
 $ bundle install
 $ bundle exec bake agent:context:install
 ```
 
-This command will set up the necessary context files that help AI assistants understand your project structure, dependencies, and conventions.
+This command will set up the necessary context files that help you understand the project structure, dependencies, and conventions.
 
-## Consulting Project Documentation
+## Ignoring Files
 
-When working on this project, consult the `agent.md` file for project-specific guidelines, architecture decisions, and development patterns. This file contains curated information that will help you and AI assistants make better decisions aligned with the project's goals and standards.
+The `.gitignore` file is split into two sections, separated by a blank line. The first section is automatically generated, while the second section is user controlled.
 
-## Best Practices
-
-- Always run `bundle install && bundle exec bake agent:context:install` when setting up a new development environment.
-- Refer to `agent.md` before making significant architectural changes.
-- Keep the context information up-to-date as the project evolves.
+While working on pull requests, you should not add unrelated changes to the `.gitignore` file as part of the pull request.
