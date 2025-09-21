@@ -33,6 +33,96 @@ describe Bake::Modernize::License::Mailmap do
 	end
 end
 
+describe Bake::Modernize::License::Contributors do
+	let(:mailmap) {Bake::Modernize::License::Mailmap.new}
+	let(:contributors) {subject.new(mailmap: mailmap)}
+	
+	it "can iterate over contributions without mailmap" do
+		contributors_without_mailmap = subject.new
+		
+		contribution = {
+			author: {name: "John Doe", email: "john@example.com"},
+			time: Time.new(2023, 1, 1),
+			path: "test.rb"
+		}
+		
+		contributors_without_mailmap.contributions << contribution
+		
+		results = []
+		contributors_without_mailmap.each do |path, author, time|
+			results << {path: path, author: author, time: time}
+		end
+		
+		expect(results.length).to be == 1
+		expect(results[0][:path]).to be == "test.rb"
+		expect(results[0][:author][:name]).to be == "John Doe"
+		expect(results[0][:author][:email]).to be == "john@example.com"
+	end
+	
+	it "applies mailmap transformations when available" do
+		mailmap.names["john@old-email.com"] = "John Smith"
+		
+		contribution = {
+			author: {name: "John Doe", email: "john@old-email.com"},
+			time: Time.new(2023, 1, 1),
+			path: "test.rb"
+		}
+		
+		contributors.contributions << contribution
+		
+		results = []
+		contributors.each do |path, author, time|
+			results << {path: path, author: author, time: time}
+		end
+		
+		expect(results.length).to be == 1
+		expect(results[0][:author][:name]).to be == "John Smith"
+		expect(results[0][:author][:email]).to be == "john@old-email.com"
+	end
+	
+	it "preserves original author data when no mailmap mapping exists" do
+		mailmap.names["other@email.com"] = "Other Person"
+		
+		contribution = {
+			author: {name: "John Doe", email: "john@example.com"},
+			time: Time.new(2023, 1, 1),
+			path: "test.rb"
+		}
+		
+		contributors.contributions << contribution
+		
+		results = []
+		contributors.each do |path, author, time|
+			results << {path: path, author: author, time: time}
+		end
+		
+		expect(results.length).to be == 1
+		expect(results[0][:author][:name]).to be == "John Doe"
+		expect(results[0][:author][:email]).to be == "john@example.com"
+	end
+	
+	it "handles contributions without email address" do
+		mailmap.names["john@example.com"] = "John Smith"
+		
+		contribution = {
+			author: {name: "John Doe"},
+			time: Time.new(2023, 1, 1),
+			path: "test.rb"
+		}
+		
+		contributors.contributions << contribution
+		
+		results = []
+		contributors.each do |path, author, time|
+			results << {path: path, author: author, time: time}
+		end
+		
+		expect(results.length).to be == 1
+		expect(results[0][:author][:name]).to be == "John Doe"
+		expect(results[0][:author][:email]).to be == nil
+	end
+end
+
 describe Bake::Modernize::License::Authorship::Copyright do
 	it "adds period when author doesn't end with one" do
 		copyright = subject.new([Time.new(2023), Time.new(2024)], "Samuel Williams")

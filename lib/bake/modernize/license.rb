@@ -110,26 +110,35 @@ module Bake
 				DEFAULT_PATH = "."
 				
 				# Load contributors from a directory.
-				def self.for(root)
+				def self.for(root, mailmap: nil)
 					full_path = File.join(root, ".contributors.yaml")
 					
 					if File.exist?(full_path)
-						contributors = self.new
+						contributors = self.new(mailmap: mailmap)
 						contributors.extract(full_path)
 						return contributors
 					end
 				end
 				
 				# Create a new, empty, contributors list.
-				def initialize
+				def initialize(mailmap: nil)
 					@contributions = []
+					@mailmap = mailmap
 				end
+				
+				# @attribute [Array(Hash)] The list of contributions.
+				attr :contributions
 				
 				# Iterate over each contribution.
 				def each(&block)
 					@contributions.each do |contribution|
-						author = contribution[:author]
+						author = contribution[:author].dup
 						time = contribution[:time]
+						
+						# Apply mailmap transformation if available
+						if @mailmap && author[:email] && mapped_name = @mailmap.names[author[:email]]
+							author[:name] = mapped_name
+						end
 						
 						paths_for(contribution) do |path|
 							yield path, author, time
@@ -220,7 +229,7 @@ module Bake
 					mailmap = Mailmap.for(root)
 					skip_list = SkipList.for(root)
 					
-					if contributors = Contributors.for(root)
+					if contributors = Contributors.for(root, mailmap: mailmap)
 						contributors.each do |path, author, time|
 							add(path, author, time)
 						end

@@ -31,6 +31,6 @@ describe "modernize:copilot" do
 		# Verify content includes required information
 		content = File.read(copilot_file)
 		expect(content =~ /bundle exec bake agent:context:install/).to be_truthy
-		expect(content =~ /agent\.md/).to be_truthy
+		expect(content =~ /agents\.md/).to be_truthy
 	end
 end
