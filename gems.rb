@@ -18,11 +18,11 @@ group :test do
 	gem "sus"
 	gem "covered"
 	gem "decode"
+	
 	gem "rubocop"
+	gem "rubocop-md"
 	gem "rubocop-socketry"
 	
 	gem "bake-test"
 	gem "bake-test-external"
 end
-
-gem "rubocop-md", "~> 2.0", group: :test
