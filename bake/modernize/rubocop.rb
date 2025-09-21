@@ -11,7 +11,7 @@ def rubocop
 end
 
 def update(root:)
-	system("bundle", "add", "rubocop", "rubocop-socketry", "--group", "test", chdir: root)
+	system("bundle", "add", "rubocop", "rubocop-md", "rubocop-socketry", "--group", "test", chdir: root)
 	
 	template_root = Bake::Modernize.template_path_for("rubocop")
 	Bake::Modernize.copy_template(template_root, root)

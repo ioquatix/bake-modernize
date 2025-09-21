@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
 	spec.version = Bake::Modernize::VERSION
 	
 	spec.summary = "Automatically modernize parts of your project/gem."
-	spec.authors = ["Samuel Williams", "Olle Jonsson"]
+	spec.authors = ["Samuel Williams", "Olle Jonsson", "Copilot"]
 	spec.license = "MIT"
 	
 	spec.cert_chain  = ["release.cert"]
