@@ -42,6 +42,7 @@ Layout/DefEndAlignment:
 
 Layout/CaseIndentation:
   Enabled: true
+  EnforcedStyle: end
 
 Layout/CommentIndentation:
   Enabled: true
