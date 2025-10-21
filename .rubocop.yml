@@ -50,6 +50,9 @@ Layout/CaseIndentation:
 Layout/CommentIndentation:
   Enabled: true
 
+Layout/FirstHashElementIndentation:
+  Enabled: true
+
 Layout/EmptyLinesAroundClassBody:
   Enabled: true
 
