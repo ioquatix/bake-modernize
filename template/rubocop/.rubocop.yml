@@ -34,6 +34,9 @@ Layout/BeginEndAlignment:
   Enabled: true
   EnforcedStyleAlignWith: start_of_line
 
+Layout/RescueEnsureAlignment:
+  Enabled: true
+
 Layout/ElseAlignment:
   Enabled: true
 
