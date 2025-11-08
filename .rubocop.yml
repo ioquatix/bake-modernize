@@ -59,6 +59,7 @@ Layout/CommentIndentation:
 
 Layout/FirstHashElementIndentation:
   Enabled: true
+  EnforcedStyle: consistent
 
 Layout/EmptyLinesAroundClassBody:
   Enabled: true
