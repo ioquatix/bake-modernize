@@ -13,6 +13,9 @@ Layout/ConsistentBlankLineIndentation:
 Layout/BlockDelimiterSpacing:
   Enabled: true
 
+Style/GlobalExceptionVariables:
+  Enabled: true
+
 # General Layout rules:
 
 Layout/IndentationStyle:
