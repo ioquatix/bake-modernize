@@ -5,6 +5,6 @@
 
 module Bake
 	module Modernize
-		VERSION = "0.48.3"
+		VERSION = "0.48.4"
 	end
 end
