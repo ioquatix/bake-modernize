@@ -33,7 +33,7 @@ jobs:
       timeout-minutes: 5
       run: bundle exec bake test
     
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v5
       with:
         include-hidden-files: true
         if-no-files-found: error
