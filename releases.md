@@ -1,6 +1,6 @@
 # Releases
 
-## Unreleased
+## v0.52.0
 
   - Add support for automatic GitHub release generation.
 
