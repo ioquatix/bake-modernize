@@ -2,7 +2,7 @@
 
 # Released under the MIT License.
 # Copyright, 2025, by Copilot.
-# Copyright, 2025, by Samuel Williams.
+# Copyright, 2025-2026, by Samuel Williams.
 
 require "sus/fixtures/temporary_directory_context"
 require_relative "../../../bake/modernize/copilot"
