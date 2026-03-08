@@ -13,9 +13,8 @@ def releases(root: Dir.pwd)
 	system("bundle", "add", "bake-releases", "--group", "maintenance", chdir: root)
 	
 	update_releases(File.join(root, "readme.md"))
-	
-	template_root = Bake::Modernize.template_path_for("releases")
-	Bake::Modernize.copy_template(template_root, root)
+	update_releases_md(File.join(root, "releases.md"))
+	update_bake(root)
 end
 
 private
@@ -44,4 +43,32 @@ def update_releases(readme_path)
 	end
 	
 	File.write(readme_path, root.to_markdown(width: 0))
+end
+
+RELEASES_TEMPLATE_ROOT = Bake::Modernize.template_path_for("releases")
+
+def update_releases_md(releases_md_path)
+	# Don't overwrite an existing releases.md:
+	return if File.exist?(releases_md_path)
+	
+	FileUtils.cp(RELEASES_TEMPLATE_ROOT + "releases.md", releases_md_path)
+end
+
+def update_bake(root)
+	require "async/ollama"
+	
+	bake_path = File.join(root, "bake.rb")
+	template = File.read(RELEASES_TEMPLATE_ROOT + "bake.rb")
+	
+	if File.exist?(bake_path)
+		existing = File.read(bake_path)
+		updated = Async::Ollama::Transform.call(existing,
+			model: "qwen3-coder:latest",
+			instruction: "Merge the template into the existing file. Add any missing methods and update existing method bodies to include any missing calls shown in the template. Do not remove any existing calls.",
+			template: template,
+		)
+		File.write(bake_path, updated)
+	else
+		File.write(bake_path, template)
+	end
 end

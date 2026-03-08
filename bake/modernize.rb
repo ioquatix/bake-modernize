@@ -17,5 +17,6 @@ def modernize
 		"modernize:license",
 		"modernize:contributing",
 		"modernize:copilot",
+		"modernize:releases",
 	)
 end

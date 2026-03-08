@@ -26,6 +26,7 @@ Gem::Specification.new do |spec|
 	spec.required_ruby_version = ">= 3.3"
 	
 	spec.add_dependency "async-http"
+	spec.add_dependency "async-ollama", "~> 0.10"
 	spec.add_dependency "bake"
 	spec.add_dependency "build-files", "~> 1.6"
 	spec.add_dependency "markly", "~> 0.13"
