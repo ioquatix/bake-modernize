@@ -1,6 +1,6 @@
 # MIT License
 
-Copyright, 2020-2025, by Samuel Williams.  
+Copyright, 2020-2026, by Samuel Williams.  
 Copyright, 2021-2023, by Olle Jonsson.  
 Copyright, 2025, by Copilot.  
 
