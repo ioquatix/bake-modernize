@@ -1,6 +1,6 @@
 # Releases
 
-## Unreleased
+## v0.53.0
 
   - Make `modernize:releases` part of the default `modernize` task.
 
