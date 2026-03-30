@@ -22,7 +22,7 @@ def update(path: default_gemspec_path, output: $stdout)
 	spec = ::Gem::Specification.load(path)
 	
 	root = File.dirname(path)
-	version_path = version_path(root)
+	version_path = version_path(root, spec.name)
 	
 	constant = File.read(version_path)
 		.scan(/(?:class|module)\s+(.*?)$/)
@@ -170,8 +170,18 @@ def default_gemspec_path
 	Dir["*.gemspec"].first
 end
 
-def version_path(root)
-	Dir["lib/**/version.rb", base: root].first
+def version_path(root, gem_name)
+	candidates = Dir["lib/**/version.rb", base: root]
+	
+	# If only one version file exists, use it:
+	return candidates.first if candidates.size == 1
+	
+	# Try to match the gem name convention (e.g., "protocol-rack" -> "lib/protocol/rack/version.rb"):
+	expected_path = "lib/#{gem_name.gsub('-', '/')}/version.rb"
+	return expected_path if candidates.include?(expected_path)
+	
+	# Fall back to the shortest path (most likely to be the main gem version):
+	return candidates.min_by(&:length)
 end
 
 require "async"

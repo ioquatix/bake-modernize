@@ -1,5 +1,9 @@
 # Releases
 
+## Unreleased
+
+  - Better `version.rb` detection in `modernize:gemspec`.
+
 ## v0.53.0
 
   - Make `modernize:releases` part of the default `modernize` task.
