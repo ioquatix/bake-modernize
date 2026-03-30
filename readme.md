@@ -12,6 +12,10 @@ Please see the [project documentation](https://ioquatix.github.io/bake-modernize
 
 Please see the [project releases](https://ioquatix.github.io/bake-modernize/releases/index) for all releases.
 
+### v0.54.1
+
+  - Better `version.rb` detection in `modernize:gemspec`.
+
 ### v0.53.0
 
   - Make `modernize:releases` part of the default `modernize` task.

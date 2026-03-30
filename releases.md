@@ -1,6 +1,6 @@
 # Releases
 
-## Unreleased
+## v0.54.1
 
   - Better `version.rb` detection in `modernize:gemspec`.
 
