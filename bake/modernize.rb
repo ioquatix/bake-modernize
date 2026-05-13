@@ -18,5 +18,6 @@ def modernize
 		"modernize:contributing",
 		"modernize:copilot",
 		"modernize:releases",
+		"modernize:decode",
 	)
 end

@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-# Released under the MIT License.
-# Copyright, 2020-2026, by Samuel Williams.
-
 source "https://rubygems.org"
 
 gemspec
@@ -19,12 +16,6 @@ end
 group :test do
 	gem "sus"
 	gem "covered"
-	
-	gem "sus-fixtures-async"
-	
-	gem "rubocop"
-	gem "rubocop-md"
-	gem "rubocop-socketry"
 	
 	gem "bake-test"
 	gem "bake-test-external"
