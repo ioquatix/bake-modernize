@@ -233,9 +233,22 @@ def detect_changelog_uri(spec)
 		root = File.dirname(spec.loaded_from)
 		
 		if File.exist?(File.expand_path("releases.md", root))
-			return "https://github.com/#{account}/#{project}/blob/main/releases.md"
+			branch = current_branch(root) || "main"
+			
+			return "https://github.com/#{account}/#{project}/blob/#{branch}/releases.md"
 		end
 	end
+end
+
+def current_branch(root)
+	repository = Rugged::Repository.discover(root)
+	head = repository.head
+	
+	if head.branch?
+		return head.name.delete_prefix("refs/heads/")
+	end
+rescue Rugged::ReferenceError, Rugged::RepositoryError
+	# Fall back to the common default branch name when git metadata is unavailable.
 end
 
 def detect_funding_uri(spec)

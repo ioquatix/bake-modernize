@@ -14,7 +14,7 @@ describe "modernize:gemspec" do
 	let(:gemspec_path) {File.join(root, "example.gemspec")}
 	let(:output) {StringIO.new}
 	
-	def write_project(metadata = {})
+	def write_project(metadata = nil, branch: "main")
 		version_path = File.join(root, "lib", "example", "version.rb")
 		FileUtils.mkdir_p(File.dirname(version_path))
 		File.write(version_path, <<~RUBY)
@@ -27,7 +27,7 @@ describe "modernize:gemspec" do
 			"documentation_uri" => "https://socketry.github.io/example/",
 			"funding_uri" => "https://github.com/sponsors/socketry/",
 			"source_code_uri" => "https://github.com/socketry/example.git",
-		}.merge(metadata)
+		}.merge(metadata || {})
 		
 		File.write(gemspec_path, <<~RUBY)
 			# frozen_string_literal: true
@@ -55,7 +55,7 @@ describe "modernize:gemspec" do
 		signature = {name: "Samuel Williams", email: "samuel@example.com", time: Time.now}
 		tree = repository.index.write_tree(repository)
 		
-		Rugged::Commit.create(
+		commit_id = Rugged::Commit.create(
 			repository,
 			message: "Initial commit.",
 			author: signature,
@@ -64,6 +64,11 @@ describe "modernize:gemspec" do
 			tree: tree,
 			update_ref: "HEAD",
 		)
+		
+		unless repository.head.name == "refs/heads/#{branch}"
+			repository.branches.create(branch, commit_id)
+			repository.head = "refs/heads/#{branch}"
+		end
 	end
 	
 	def update_gemspec
@@ -84,13 +89,13 @@ describe "modernize:gemspec" do
 		expect(result).to be(:include?, %("bug_tracker_uri" => "https://github.com/socketry/example/issues"))
 	end
 	
-	it "adds changelog metadata when releases.md exists" do
-		write_project
+	it "adds changelog metadata using the current branch when releases.md exists" do
+		write_project(branch: "next")
 		File.write(File.join(root, "releases.md"), "# Releases\n")
 		
 		result = update_gemspec
 		
-		expect(result).to be(:include?, %("changelog_uri" => "https://github.com/socketry/example/blob/main/releases.md"))
+		expect(result).to be(:include?, %("changelog_uri" => "https://github.com/socketry/example/blob/next/releases.md"))
 	end
 	
 	it "does not add changelog metadata without releases.md" do
@@ -102,10 +107,10 @@ describe "modernize:gemspec" do
 	end
 	
 	it "preserves existing metadata" do
-		write_project(
+		write_project({
 			"bug_tracker_uri" => "https://example.com/issues",
 			"changelog_uri" => "https://example.com/changelog",
-		)
+		})
 		
 		result = update_gemspec
 		
