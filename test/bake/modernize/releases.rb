@@ -6,6 +6,8 @@
 require "sus/fixtures/async/reactor_context"
 require "sus/fixtures/temporary_directory_context"
 
+require "async/ollama"
+
 require_relative "../../../bake/modernize/releases"
 
 describe "modernize:releases" do
@@ -47,6 +49,28 @@ describe "modernize:releases" do
 			end
 		RUBY
 		File.write(bake_path, existing)
+		
+		mock(Async::Ollama::Transform) do |mock|
+			mock.replace(:call) do |content, model:, instruction:, template:|
+				expect(content).to be == existing
+				expect(model).to be == "qwen3-coder:latest"
+				expect(instruction).to be(:include?, "Merge the template")
+				expect(template).to be(:include?, "def after_gem_release")
+				
+				<<~RUBY
+					# frozen_string_literal: true
+					
+					def after_gem_release_version_increment(version)
+						context["utopia:project:update"].call
+						context["releases:update"].call(version)
+					end
+					
+					def after_gem_release(tag:, **options)
+						context["releases:github:release"].call(tag)
+					end
+				RUBY
+			end
+		end
 		
 		update_bake(root)
 		
