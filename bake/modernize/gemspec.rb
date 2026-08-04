@@ -31,9 +31,7 @@ def update(path: default_gemspec_path, output: $stdout)
 	
 	normalize_homepage(spec)
 	
-	spec.metadata["funding_uri"] ||= detect_funding_uri(spec)
-	spec.metadata["documentation_uri"] ||= detect_documentation_uri(spec)
-	spec.metadata["source_code_uri"] ||= detect_source_code_uri(spec)
+	update_metadata(spec)
 	
 	spec.authors = sorted_authors(Dir.pwd)
 	
@@ -199,14 +197,49 @@ end
 
 GITHUB_PROJECT = /github.com\/(?<account>.*?)\/(?<project>.*?)(\/|\Z)/
 
+def update_metadata(spec)
+	spec.metadata["bug_tracker_uri"] ||= detect_bug_tracker_uri(spec)
+	spec.metadata["changelog_uri"] ||= detect_changelog_uri(spec)
+	spec.metadata["documentation_uri"] ||= detect_documentation_uri(spec)
+	spec.metadata["funding_uri"] ||= detect_funding_uri(spec)
+	spec.metadata["source_code_uri"] ||= detect_source_code_uri(spec)
+end
+
 def normalize_homepage(spec)
 	if homepage = spec.homepage
 		spec.homepage = homepage.chomp("/")
 	end
 end
 
+def github_project(spec)
+	if homepage = spec.homepage
+		homepage.match(GITHUB_PROJECT)
+	end
+end
+
+def detect_bug_tracker_uri(spec)
+	if match = github_project(spec)
+		account = match[:account]
+		project = match[:project]
+		
+		return "https://github.com/#{account}/#{project}/issues"
+	end
+end
+
+def detect_changelog_uri(spec)
+	if match = github_project(spec)
+		account = match[:account]
+		project = match[:project]
+		root = File.dirname(spec.loaded_from)
+		
+		if File.exist?(File.expand_path("releases.md", root))
+			return "https://github.com/#{account}/#{project}/blob/main/releases.md"
+		end
+	end
+end
+
 def detect_funding_uri(spec)
-	if match = spec.homepage&.match(GITHUB_PROJECT)
+	if match = github_project(spec)
 		account = match[:account]
 		
 		funding_uri = "https://github.com/sponsors/#{account}/"
@@ -218,7 +251,7 @@ def detect_funding_uri(spec)
 end
 
 def detect_documentation_uri(spec)
-	if match = spec.homepage.match(GITHUB_PROJECT)
+	if match = github_project(spec)
 		account = match[:account]
 		project = match[:project]
 		
@@ -231,7 +264,7 @@ def detect_documentation_uri(spec)
 end
 
 def detect_source_code_uri(spec)
-	if match = spec.homepage.match(GITHUB_PROJECT)
+	if match = github_project(spec)
 		account = match[:account]
 		project = match[:project]
 		
