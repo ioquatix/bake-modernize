@@ -57,7 +57,7 @@ describe "modernize:gemspec" do
 		
 		Rugged::Commit.create(
 			repository,
-			message: "Initial commit",
+			message: "Initial commit.",
 			author: signature,
 			committer: signature,
 			parents: [],
