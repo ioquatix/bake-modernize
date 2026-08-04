@@ -3,6 +3,8 @@
 # Released under the MIT License.
 # Copyright, 2020-2026, by Samuel Williams.
 
+require "bake/modernize"
+
 # Rewrite the current gemspec.
 def gemspec
 	path = default_gemspec_path
@@ -233,22 +235,11 @@ def detect_changelog_uri(spec)
 		root = File.dirname(spec.loaded_from)
 		
 		if File.exist?(File.expand_path("releases.md", root))
-			branch = current_branch(root) || "main"
+			branch = Bake::Modernize::Git.current_branch(root, default: "main")
 			
 			return "https://github.com/#{account}/#{project}/blob/#{branch}/releases.md"
 		end
 	end
-end
-
-def current_branch(root)
-	repository = Rugged::Repository.discover(root)
-	head = repository.head
-	
-	if head.branch?
-		return head.name.delete_prefix("refs/heads/")
-	end
-rescue Rugged::ReferenceError, Rugged::RepositoryError
-	# Fall back to the common default branch name when git metadata is unavailable.
 end
 
 def detect_funding_uri(spec)
