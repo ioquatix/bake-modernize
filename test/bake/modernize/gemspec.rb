@@ -10,7 +10,7 @@ require "sus/fixtures/temporary_directory_context"
 describe "modernize:gemspec" do
 	include Sus::Fixtures::TemporaryDirectoryContext
 	
-	let(:context) {Bake::Context.load(Dir.pwd)}
+	let(:context) {Bake::Context.load}
 	let(:gemspec_path) {File.join(root, "example.gemspec")}
 	let(:output) {StringIO.new}
 	
