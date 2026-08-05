@@ -26,7 +26,7 @@ def update(path: default_gemspec_path, output: $stdout)
 	root = File.dirname(path)
 	version_path = version_path(root, spec.name)
 	
-	constant = File.read(version_path)
+	constant = File.read(File.join(root, version_path))
 		.scan(/(?:class|module)\s+(.*?)$/)
 		.flatten
 		.join("::")
@@ -35,7 +35,7 @@ def update(path: default_gemspec_path, output: $stdout)
 	
 	update_metadata(spec)
 	
-	spec.authors = sorted_authors(Dir.pwd)
+	spec.authors = sorted_authors(root)
 	
 	spec.metadata.delete_if{|_, value| value.nil?}
 	
@@ -104,7 +104,7 @@ def update(path: default_gemspec_path, output: $stdout)
 	
 	# Try to move development dependencies to `gems.rb`:
 	if spec.development_dependencies.any?
-		unless move_development_dependencies(spec.development_dependencies)
+		unless move_development_dependencies(spec.development_dependencies, root)
 			output.puts "\t"
 			spec.development_dependencies.sort.each do |dependency|
 				output.puts "\tspec.add_development_dependency #{format_dependency(dependency)}"
@@ -287,8 +287,8 @@ IGNORE_GEMS = %w[
 	bundler
 ].freeze
 
-def move_development_dependencies(dependencies)
-	gemfile_path = File.expand_path("gems.rb")
+def move_development_dependencies(dependencies, root = Dir.pwd)
+	gemfile_path = File.expand_path("gems.rb", root)
 	
 	if File.exist?(gemfile_path)
 		File.open(gemfile_path, "a") do |file|

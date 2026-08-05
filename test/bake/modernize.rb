@@ -6,6 +6,7 @@
 require "bake"
 require "bake/context"
 require "bake/modernize"
+require "bake/modernize/git"
 require "sus/fixtures/temporary_directory_context"
 
 describe Bake::Modernize do
@@ -25,6 +26,10 @@ describe Bake::Modernize do
 		File.write(destination_path, "old")
 		
 		expect(Bake::Modernize.stale?(source_path, destination_path)).to be == true
+	end
+	
+	it "returns the default branch outside a git repository" do
+		expect(Bake::Modernize::Git.current_branch(root, default: "main")).to be == "main"
 	end
 	
 	it "updates documentation after a version increment" do
