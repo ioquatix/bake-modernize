@@ -10,7 +10,7 @@ def git(root: Dir.pwd)
 end
 
 def update(root:)
-	if current_branch == "master"
+	if Bake::Modernize::Git.current_branch(root, default: nil) == "master"
 		# https://github.com/github/renaming
 		system("git", "branch", "-M", "main")
 		system("git", "push", "-u", "origin", "main")
@@ -41,16 +41,4 @@ def current_gitignore_custom_lines(root)
 			return lines
 		end
 	end
-end
-
-def current_branch
-	require "open3"
-	
-	output, status = Open3.capture2("git", "branch", "--show-current")
-	
-	unless status.success?
-		raise "Could not get current branch!"
-	end
-	
-	return output
 end
