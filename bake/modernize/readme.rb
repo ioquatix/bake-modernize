@@ -6,8 +6,8 @@
 require "bake/modernize"
 require "build/files/system"
 
-def readme
-	update(root: Dir.pwd)
+def readme(root: Dir.pwd)
+	update(root: root)
 end
 
 def update(root:)

@@ -5,8 +5,8 @@
 
 require "bake/modernize"
 
-def editorconfig
-	update(root: Dir.pwd)
+def editorconfig(root: Dir.pwd)
+	update(root: root)
 end
 
 def update(root:)
