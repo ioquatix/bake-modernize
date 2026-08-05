@@ -27,8 +27,8 @@ SOFTWARE.
 LICENSE
 
 # @parameter root [String] The root directory to scan for changes.
-def license
-	update(root: Dir.pwd)
+def license(root: Dir.pwd)
+	update(root: root)
 end
 
 def update(root:)
@@ -121,4 +121,3 @@ def remove_license(readme_path)
 	
 	File.write(readme_path, root.to_markdown(width: 0))
 end
-

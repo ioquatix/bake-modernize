@@ -173,14 +173,20 @@ module Bake
 			class Authorship
 				# Represents a modification to a file.
 				Modification = Struct.new(:author, :time, :path, :id) do
+					# The full name of the author who made the modification.
+					# @returns [String] The author's display name.
 					def full_name
 						author[:name]
 					end
 					
+					# The stable key used to group modifications by commit or contribution.
+					# @returns [String] The modification key.
 					def key
 						self.id || "#{self.author[:email]}:#{self.time.iso8601}"
 					end
 					
+					# Convert the modification to a serializable hash.
+					# @returns [Hash] The modification data.
 					def to_h
 						{
 							id: id,
@@ -193,10 +199,15 @@ module Bake
 				
 				# Represents the copyright for an author.
 				Copyright = Struct.new(:dates, :author) do
+					# Compare copyrights by their dates and author.
+					# @parameter other [Copyright] The other copyright to compare.
+					# @returns [Integer] The comparison result.
 					def <=> other
 						self.to_a <=> other.to_a
 					end
 					
+					# Generate the copyright statement for the author.
+					# @returns [String] The formatted copyright statement.
 					def statement
 						years = self.dates.map(&:year).uniq
 						period = author.end_with?(".") ? "" : "."

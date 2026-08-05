@@ -6,8 +6,8 @@
 require "bake/modernize"
 require "build/files/system"
 
-def rubocop
-	update(root: Dir.pwd)
+def rubocop(root: Dir.pwd)
+	update(root: root)
 end
 
 def update(root:)

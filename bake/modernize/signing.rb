@@ -5,8 +5,8 @@
 
 require "bake/modernize"
 
-def signing
-	update(root: Dir.pwd)
+def signing(root: Dir.pwd)
+	update(root: root)
 end
 
 def update(root:)

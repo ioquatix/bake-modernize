@@ -5,8 +5,8 @@
 
 require "bake/modernize"
 
-def gemfile
-	update(root: Dir.pwd)
+def gemfile(root: Dir.pwd)
+	update(root: root)
 end
 
 def update(root:)

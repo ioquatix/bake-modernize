@@ -5,8 +5,8 @@
 
 require "bake/modernize"
 
-def git
-	update(root: Dir.pwd)
+def git(root: Dir.pwd)
+	update(root: root)
 end
 
 def update(root:)

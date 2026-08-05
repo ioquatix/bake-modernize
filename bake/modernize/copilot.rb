@@ -6,8 +6,8 @@
 
 require "bake/modernize"
 
-def copilot
-	update(root: Dir.pwd)
+def copilot(root: Dir.pwd)
+	update(root: root)
 end
 
 def update(root:)

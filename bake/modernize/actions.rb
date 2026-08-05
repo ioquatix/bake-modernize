@@ -8,8 +8,8 @@ require "rugged"
 require "markly"
 require "build/files/system"
 
-def actions
-	update(root: Dir.pwd)
+def actions(root: Dir.pwd)
+	update(root: root)
 end
 
 def update(root:)
