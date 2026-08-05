@@ -10,6 +10,15 @@ require_relative "../../../bake/modernize/copilot"
 describe "modernize:copilot" do
 	include Sus::Fixtures::TemporaryDirectoryContext
 	
+	it "uses the current directory by default" do
+		Dir.chdir(root) do
+			copilot
+		end
+		
+		copilot_file = File.join(root, ".github", "copilot-instructions.md")
+		expect(File.exist?(copilot_file)).to be_truthy
+	end
+	
 	it "creates copilot-instructions.md file" do
 		update(root: root)
 		

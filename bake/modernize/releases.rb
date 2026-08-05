@@ -39,7 +39,7 @@ def update_releases(readme_path)
 	if node
 		node.append_before(replacement)
 	else
-		root.append(replacement)
+		root.last_child.append_after(replacement)
 	end
 	
 	File.write(readme_path, root.to_markdown(width: 0))

@@ -16,6 +16,57 @@ describe "modernize:releases" do
 	
 	let(:bake_path) {File.join(root, "bake.rb")}
 	let(:releases_md_path) {File.join(root, "releases.md")}
+	let(:readme_path) {File.join(root, "readme.md")}
+	
+	it "updates the release project files" do
+		File.write(readme_path, "# Example\n")
+		
+		mock(self) do |mock|
+			mock.replace(:system) do |*arguments, chdir: nil|
+				expect(arguments).to be == ["bundle", "add", "bake-releases", "--group", "maintenance"]
+				expect(chdir).to be == root
+				true
+			end
+			
+			mock.replace(:update_bake) do |path|
+				expect(path).to be == root
+				File.write(bake_path, "# frozen_string_literal: true\n")
+			end
+		end
+		
+		releases(root: root)
+		
+		expect(File.read(readme_path)).to be =~ /## Releases/
+		expect(File.exist?(releases_md_path)).to be_truthy
+		expect(File.exist?(bake_path)).to be_truthy
+	end
+	
+	it "does not add releases to a readme that already has them" do
+		content = "# Example\n\n## Releases\n\nExisting release notes.\n"
+		File.write(readme_path, content)
+		
+		update_releases(readme_path)
+		
+		expect(File.read(readme_path)).to be == content
+	end
+	
+	it "adds releases before see also" do
+		File.write(readme_path, "# Example\n\n## See Also\n\n- Other projects.\n")
+		
+		update_releases(readme_path)
+		
+		result = File.read(readme_path)
+		expect(result.index("## Releases")).to be < result.index("## See Also")
+	end
+	
+	it "adds releases before contributing" do
+		File.write(readme_path, "# Example\n\n## Contributing\n\n- Send patches.\n")
+		
+		update_releases(readme_path)
+		
+		result = File.read(readme_path)
+		expect(result.index("## Releases")).to be < result.index("## Contributing")
+	end
 	
 	it "creates releases.md when it does not exist" do
 		update_releases_md(releases_md_path)
