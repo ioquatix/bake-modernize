@@ -8,6 +8,8 @@ require "bake/context"
 require "bake/modernize"
 require "sus/fixtures/temporary_directory_context"
 
+require_relative "../../bake"
+
 describe Bake::Modernize do
 	include Sus::Fixtures::TemporaryDirectoryContext
 	
@@ -23,6 +25,49 @@ describe Bake::Modernize do
 		File.write(destination_path, "old")
 		
 		expect(Bake::Modernize.stale?(source_path, destination_path)).to be == true
+	end
+	
+	it "updates documentation after a version increment" do
+		calls = []
+		context = Object.new
+		context.define_singleton_method(:[]) do |name|
+			Object.new.tap do |callable|
+				callable.define_singleton_method(:call) do |*arguments|
+					calls << [name, arguments]
+				end
+			end
+		end
+		
+		mock(self) do |mock|
+			mock.replace(:context){context}
+		end
+		
+		after_gem_release_version_increment("1.2.3")
+		
+		expect(calls).to be == [
+			["releases:update", ["1.2.3"]],
+			["utopia:project:update", []],
+		]
+	end
+	
+	it "creates GitHub releases after gem release" do
+		calls = []
+		context = Object.new
+		context.define_singleton_method(:[]) do |name|
+			Object.new.tap do |callable|
+				callable.define_singleton_method(:call) do |*arguments|
+					calls << [name, arguments]
+				end
+			end
+		end
+		
+		mock(self) do |mock|
+			mock.replace(:context){context}
+		end
+		
+		after_gem_release(tag: "v1.2.3")
+		
+		expect(calls).to be == [["releases:github:release", ["v1.2.3"]]]
 	end
 	
 	# let(:context) {Bake::Context.load}
