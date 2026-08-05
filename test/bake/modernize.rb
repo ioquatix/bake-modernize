@@ -8,10 +8,10 @@ require "bake/context"
 require "bake/modernize"
 require "sus/fixtures/temporary_directory_context"
 
-require_relative "../../bake"
-
 describe Bake::Modernize do
 	include Sus::Fixtures::TemporaryDirectoryContext
+	
+	let(:context) {Bake::Context.load}
 	
 	it "has a version number" do
 		expect(Bake::Modernize::VERSION).to be =~ /^\d+\.\d+\.\d+$/
@@ -29,20 +29,22 @@ describe Bake::Modernize do
 	
 	it "updates documentation after a version increment" do
 		calls = []
-		context = Object.new
-		context.define_singleton_method(:[]) do |name|
+		call_context = Object.new
+		call_context.define_singleton_method(:[]) do |name|
 			Object.new.tap do |callable|
 				callable.define_singleton_method(:call) do |*arguments|
 					calls << [name, arguments]
 				end
 			end
 		end
+		task = context.lookup("after_gem_release_version_increment")
+		recipe = task.instance_variable_get(:@instance)
 		
-		mock(self) do |mock|
-			mock.replace(:context){context}
+		mock(recipe) do |mock|
+			mock.replace(:context){call_context}
 		end
 		
-		after_gem_release_version_increment("1.2.3")
+		task.call("1.2.3")
 		
 		expect(calls).to be == [
 			["releases:update", ["1.2.3"]],
@@ -52,27 +54,23 @@ describe Bake::Modernize do
 	
 	it "creates GitHub releases after gem release" do
 		calls = []
-		context = Object.new
-		context.define_singleton_method(:[]) do |name|
+		call_context = Object.new
+		call_context.define_singleton_method(:[]) do |name|
 			Object.new.tap do |callable|
 				callable.define_singleton_method(:call) do |*arguments|
 					calls << [name, arguments]
 				end
 			end
 		end
+		task = context.lookup("after_gem_release")
+		recipe = task.instance_variable_get(:@instance)
 		
-		mock(self) do |mock|
-			mock.replace(:context){context}
+		mock(recipe) do |mock|
+			mock.replace(:context){call_context}
 		end
 		
-		after_gem_release(tag: "v1.2.3")
+		task.call(tag: "v1.2.3")
 		
 		expect(calls).to be == [["releases:github:release", ["v1.2.3"]]]
 	end
-	
-	# let(:context) {Bake::Context.load}
-	
-	# it "can modernize itself" do
-	# 	context.call('modernize')
-	# end
 end

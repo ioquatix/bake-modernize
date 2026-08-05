@@ -6,21 +6,14 @@
 
 require "sus/fixtures/temporary_directory_context"
 require "bake/context"
-require_relative "../../../bake/modernize/copilot"
 
 describe "modernize:copilot" do
 	include Sus::Fixtures::TemporaryDirectoryContext
 	
-	it "can be invoked with a root path" do
-		context = Bake::Context.load
-		context.lookup("modernize:copilot").call(root: root)
-		
-		copilot_file = File.join(root, ".github", "copilot-instructions.md")
-		expect(File.exist?(copilot_file)).to be_truthy
-	end
+	let(:context) {Bake::Context.load}
 	
-	it "creates copilot-instructions.md file" do
-		update(root: root)
+	it "can be invoked with a root path" do
+		context.lookup("modernize:copilot").call(root: root)
 		
 		copilot_file = File.join(root, ".github", "copilot-instructions.md")
 		expect(File.exist?(copilot_file)).to be_truthy
