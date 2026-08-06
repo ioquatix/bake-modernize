@@ -23,6 +23,7 @@ def update(root:)
 	
 	template_root = Bake::Modernize.template_path_for("actions")
 	Bake::Modernize.copy_template(template_root, root)
+	update_external_test(root)
 	
 	readme_path = ["README.md", "readme.md"].find{|path| File.exist?(File.expand_path(path, root))}
 	
@@ -58,6 +59,31 @@ def update_filenames(root)
 	if coverage_path.exist?
 		FileUtils::Verbose.mv(coverage_path, test_coverage_path)
 	end
+end
+
+def update_external_test(root)
+	external_config_path = File.expand_path("config/external.yaml", root)
+	external_workflow_path = File.expand_path(".github/workflows/test-external.yaml", root)
+	
+	if File.exist?(external_config_path)
+		system("bundle", "add", "bake-test-external", "--group", "test", chdir: root)
+	else
+		FileUtils::Verbose.rm(external_workflow_path) if File.exist?(external_workflow_path)
+		
+		if external_test_gem?(root)
+			system("bundle", "remove", "bake-test-external", chdir: root)
+		end
+	end
+end
+
+def external_test_gem?(root)
+	gemfile_path = ["gems.rb", "Gemfile"].find do |path|
+		File.exist?(File.expand_path(path, root))
+	end
+	
+	return false unless gemfile_path
+	
+	File.read(File.expand_path(gemfile_path, root)).match?(/^\s*gem\s+["']bake-test-external["']/)
 end
 
 def repository_url(root)
