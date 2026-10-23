@@ -10,9 +10,6 @@ Gem::Specification.new do |spec|
 	spec.authors = ["Samuel Williams", "Olle Jonsson", "Copilot"]
 	spec.license = "MIT"
 	
-	spec.cert_chain  = ["release.cert"]
-	spec.signing_key = File.expand_path("~/.gem/socketry-release.pem")
-	
 	spec.homepage = "https://github.com/ioquatix/bake-modernize"
 	
 	spec.metadata = {
@@ -20,11 +17,10 @@ Gem::Specification.new do |spec|
 		"changelog_uri" => "https://github.com/ioquatix/bake-modernize/blob/main/releases.md",
 		"documentation_uri" => "https://ioquatix.github.io/bake-modernize/",
 		"funding_uri" => "https://github.com/sponsors/ioquatix/",
-		"signing_owner" => "socketry",
 		"source_code_uri" => "https://github.com/ioquatix/bake-modernize.git",
 	}
 	
-	spec.files = Dir.glob(["{bake,context,lib,template}/**/*", "*.md", "release.cert"], File::FNM_DOTMATCH, base: __dir__)
+	spec.files = Dir.glob(["{bake,context,lib,template}/**/*", "*.md"], File::FNM_DOTMATCH, base: __dir__)
 	
 	spec.required_ruby_version = ">= 3.3"
 	

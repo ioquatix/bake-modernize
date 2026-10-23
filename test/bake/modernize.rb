@@ -33,6 +33,7 @@ describe Bake::Modernize do
 		
 		expect(calls.index("modernize:gemfile")).to be < calls.index("modernize:actions")
 		expect(calls).not.to be(:include?, "modernize:releases:github")
+		expect(calls).not.to be(:include?, "modernize:signing")
 	end
 	
 	with ".gem_dependencies" do

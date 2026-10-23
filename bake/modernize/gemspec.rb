@@ -24,7 +24,6 @@ def update(path: default_gemspec_path, output: $stdout)
 	spec = ::Gem::Specification.load(path)
 	
 	root = File.dirname(path)
-	signing = Bake::Modernize::Signing.new(spec)
 	version_path = version_path(root, spec.name)
 	
 	constant = File.read(File.join(root, version_path))
@@ -51,14 +50,6 @@ def update(path: default_gemspec_path, output: $stdout)
 	output.puts "\tspec.summary = #{spec.summary.inspect}"
 	output.puts "\tspec.authors = #{spec.authors.inspect}"
 	output.puts "\tspec.license = #{spec.license.inspect}"
-	
-	certificate_path = File.expand_path("release.cert", root)
-	
-	if File.exist?(certificate_path)
-		output.puts "\t"
-		output.puts "\tspec.cert_chain  = [\"release.cert\"]"
-		output.puts "\tspec.signing_key = #{signing.private_key_expression}"
-	end
 	
 	if spec.homepage and !spec.homepage.empty?
 		output.puts "\t"
@@ -201,6 +192,7 @@ end
 GITHUB_PROJECT = /github.com\/(?<account>.*?)\/(?<project>.*?)(\/|\Z)/
 
 def update_metadata(spec)
+	spec.metadata.delete("signing_owner")
 	spec.metadata["bug_tracker_uri"] ||= detect_bug_tracker_uri(spec)
 	spec.metadata["changelog_uri"] ||= detect_changelog_uri(spec)
 	spec.metadata["documentation_uri"] ||= detect_documentation_uri(spec)

@@ -15,6 +15,6 @@ checks:
 - validate
 - Release validation
 approvals: 2
-signing: true
+signing: false
 ruby: '3.4'
 environment: rubygems

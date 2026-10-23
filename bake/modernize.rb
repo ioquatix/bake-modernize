@@ -12,7 +12,6 @@ def modernize
 		"modernize:gemfile",
 		"modernize:actions",
 		"modernize:rubocop",
-		"modernize:signing",
 		"modernize:gemspec",
 		"modernize:license",
 		"modernize:contributing",
