@@ -14,7 +14,7 @@ Please see the [project documentation](https://ioquatix.github.io/bake-modernize
 
 Please see the [project releases](https://ioquatix.github.io/bake-modernize/releases/index) for all releases.
 
-### Unreleased
+### v0.66.0
 
   - Remove certificate signing tasks and gemspec settings. GitHub releases use Trusted Publishing and attestations without a separate RubyGems signing key.
 
