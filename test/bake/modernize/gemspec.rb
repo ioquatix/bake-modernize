@@ -146,7 +146,6 @@ describe "modernize:gemspec" do
 		write_project
 		FileUtils.mkdir_p(File.join(root, "exe"))
 		FileUtils.mkdir_p(File.join(root, "ext"))
-		File.write(File.join(root, "release.cert"), "certificate")
 		File.write(File.join(root, ".rspec"), "--format documentation\n")
 		
 		File.write(gemspec_path, <<~RUBY)
@@ -171,7 +170,6 @@ describe "modernize:gemspec" do
 		
 		result = update_gemspec
 		
-		expect(result).to be(:include?, "spec.cert_chain")
 		expect(result).to be(:include?, %(spec.homepage = "https://github.com/socketry/example"))
 		expect(result).to be(:include?, "File::FNM_DOTMATCH")
 		expect(result).to be(:include?, %(spec.require_paths = ["lib"]))
@@ -180,6 +178,23 @@ describe "modernize:gemspec" do
 		expect(result).to be(:include?, %(spec.add_dependency "console", "~> 1.0"))
 		expect(result).to be(:include?, %(spec.add_dependency "json"))
 		expect(result).to be(:include?, %(spec.add_development_dependency "sus"))
+	end
+	
+	it "removes legacy certificate signing configuration even when a certificate exists" do
+		write_project({"signing_owner" => "socketry"})
+		File.write(File.join(root, "release.cert"), "legacy certificate")
+		gemspec = File.read(gemspec_path).sub("spec.license = \"MIT\"", <<~RUBY)
+			spec.license = "MIT"
+			spec.cert_chain = ["release.cert"]
+			spec.signing_key = "/missing/private-key.pem"
+		RUBY
+		File.write(gemspec_path, gemspec)
+		
+		result = update_gemspec
+		
+		expect(result).not.to be(:include?, "spec.cert_chain")
+		expect(result).not.to be(:include?, "spec.signing_key")
+		expect(result).not.to be(:include?, "signing_owner")
 	end
 	
 	it "moves development dependencies to gems.rb" do

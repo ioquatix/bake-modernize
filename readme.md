@@ -14,6 +14,10 @@ Please see the [project documentation](https://ioquatix.github.io/bake-modernize
 
 Please see the [project releases](https://ioquatix.github.io/bake-modernize/releases/index) for all releases.
 
+### Unreleased
+
+  - Remove certificate signing tasks and gemspec settings. GitHub releases use Trusted Publishing and attestations without a separate RubyGems signing key.
+
 ### v0.64.0
 
   - Prefer the configured signing owner or GitHub owner when selecting RubyGems signing certificates and private keys.

@@ -5,7 +5,6 @@
 
 require_relative "modernize/git"
 require_relative "modernize/license"
-require_relative "modernize/signing"
 require_relative "modernize/version"
 
 require "build/files/glob"
